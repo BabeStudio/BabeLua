@@ -11,8 +11,11 @@ Features
 =======
 
 syntax coloring and auto completion;
+
 syntax error check;
+
 preview file outline and jump;
+
 lightweight project management;
 
 Requirements
