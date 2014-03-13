@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--You must restart visual studio for the changes to take effect-->
+<Keywords>
+	<!--support at most 15 groups-->
+	<User r="0" g="0" b="255">
+		<word>add_your_keyword_like_this</word>
+	</User>
+	<User r="255" g="0" b="0">
+		<word>add_your_keyword_like_this</word>
+	</User>
+</Keywords>

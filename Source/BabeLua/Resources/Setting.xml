@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--You should never modify this file by yourself-->
+<Settings>
+	<LuaSettings>
+		<CurrentSet></CurrentSet>
+	</LuaSettings>
+	<SearchFilters>
+		<local />
+		<do />
+		<while />
+		<for />
+		<end />
+		<function />
+		<if />
+		<then />
+		<elseif />
+		<and />
+		<or />
+		<not />
+		<true />
+		<false />
+		<nil />
+		<return />
+		<repeat />
+		<until />
+		<in />
+		<break />
+	</SearchFilters>
+	<UISettings>
+		<HideUselessView>0</HideUselessView>
+	</UISettings>
+	<KeyBinding></KeyBinding>
+	<Highlight>
+		<Table r="0" g="0" b="0"/>
+		<Function r="0" g="0" b="0"/>
+	</Highlight>
+	<Keywords>
+		<ClassDefinition>class</ClassDefinition>
+		<ClassConstructor>new</ClassConstructor>
+	</Keywords>
+</Settings>
