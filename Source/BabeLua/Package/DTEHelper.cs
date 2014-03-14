@@ -69,7 +69,6 @@ namespace Babe.Lua
 		void TextViewCreationListener_FileContentChanged(object sender, Irony.Parsing.ParseTree e)
 		{
 			IntellisenseHelper.Refresh(e);
-
 		}
 
 		void UploadLog()

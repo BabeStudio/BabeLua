@@ -251,7 +251,6 @@
     <None Include="Resources\Setting.xml">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Resources\KeyWords.xml" />
     <Resource Include="Resources\file.png" />
     <Resource Include="Resources\folder.png" />
     <Resource Include="Resources\copy.png" />

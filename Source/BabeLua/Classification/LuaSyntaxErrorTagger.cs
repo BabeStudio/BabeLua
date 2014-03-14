@@ -30,7 +30,6 @@ namespace LuaLanguage.Classification
     {
         ITextBuffer buffer;
         List<Irony.Parsing.Token> errorTokens = new List<Irony.Parsing.Token>();
-        Timer delayTimer;
         String msgParse;
 
         static Irony.Parsing.Grammar grammar = LuaLanguage.LuaGrammar.Instance;
