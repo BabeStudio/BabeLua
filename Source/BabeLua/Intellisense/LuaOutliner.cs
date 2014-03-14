@@ -22,21 +22,24 @@ namespace LuaLanguage.Intellisense
         } 
     }
         
-    internal sealed class OutliningTagger : ITagger<IOutliningRegionTag>, IDisposable
+    internal sealed class OutliningTagger : ITagger<IOutliningRegionTag>
     {
         string ellipsis = "...";    //the characters that are displayed when the region is collapsed
         ITextBuffer buffer;
         ITextSnapshot snapshot;
         List<Region> regions;
-        Timer delayTimer;
 
         public OutliningTagger(ITextBuffer buffer)
         {
             this.buffer = buffer;
             this.snapshot = buffer.CurrentSnapshot;
             this.regions = new List<Region>();
-            this.ReParse(false);
-            this.buffer.Changed += BufferChanged;
+            
+			Babe.Lua.Editor.TextViewCreationListener.FileContentChanged += TextViewCreationListener_FileContentChanged;
+
+			Irony.Parsing.Parser parser = new Irony.Parsing.Parser(LuaLanguage.LuaGrammar.Instance);
+			var tree = parser.Parse(snapshot.GetText());
+			ReParse(tree);
         }
 
         public IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(NormalizedSnapshotSpanCollection spans)
@@ -78,36 +81,22 @@ namespace LuaLanguage.Intellisense
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
-        void BufferChanged(object sender, TextContentChangedEventArgs e)
-        {
-            // If this isn't the most up-to-date version of the buffer, then ignore it for now (we'll eventually get another change event).
-            if (e.After != buffer.CurrentSnapshot)
-                return;
+		void TextViewCreationListener_FileContentChanged(object sender, Irony.Parsing.ParseTree e)
+		{
+			ReParse(e);
+		}
 
-            if (delayTimer != null)
-                delayTimer.Dispose();
-
-            delayTimer = new Timer(o => this.ReParse(true), null, 1000, Timeout.Infinite);
-        }
-
-        void ReParse(bool RefreshFile)
+        void ReParse(Irony.Parsing.ParseTree tree)
         {
             ITextSnapshot newSnapshot = buffer.CurrentSnapshot;
             List<Region> newRegions = new List<Region>();
 
-            LuaLanguage.LuaGrammar grammar = LuaLanguage.LuaGrammar.Instance;
-            Irony.Parsing.Parser parser = new Irony.Parsing.Parser(grammar);
-            var tree = parser.Parse(newSnapshot.GetText());
             if (tree.Root != null)
             {
                 FindHiddenRegions(newSnapshot, tree.Root, ref newRegions);
 
                 FindUserRegions(newSnapshot, tree, ref newRegions);
 
-                if (RefreshFile)
-                {
-                    LuaLanguage.DataModel.IntellisenseHelper.Refresh(tree);
-                }
             }
           
             //determine the changed span, and send a changed event with the new spans
@@ -292,11 +281,6 @@ namespace LuaLanguage.Intellisense
             public int EndOffset { get; set; }
             public string Preview { get; set; }
             public bool IsCollapsed { get; set; }
-        }
-
-        public void Dispose()
-        {
-            if (delayTimer != null) delayTimer.Dispose();
         }
     }
 }

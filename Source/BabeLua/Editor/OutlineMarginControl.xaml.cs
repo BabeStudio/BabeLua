@@ -80,23 +80,24 @@ namespace Babe.Lua.Editor
 
         void OutlineMarginControl_Loaded(object sender, RoutedEventArgs e)
         {
-            var file = DTEHelper.Current.DTE.ActiveDocument.FullName;
-            if (!System.IO.File.Exists(file))
-            {
-                //文件已经被移除，我们关闭窗口
-                IntellisenseHelper.RemoveFile(file);
-                DTEHelper.Current.DTE.ActiveDocument.Close(EnvDTE.vsSaveChanges.vsSaveChangesNo);
-                return;
-            }
+			//System.Diagnostics.Debug.Print("document load");
+			//var file = DTEHelper.Current.DTE.ActiveDocument.FullName;
+			//if (!System.IO.File.Exists(file))
+			//{
+			//	//文件已经被移除，我们关闭窗口
+			//	IntellisenseHelper.RemoveFile(file);
+			//	DTEHelper.Current.DTE.ActiveDocument.Close(EnvDTE.vsSaveChanges.vsSaveChangesNo);
+			//	return;
+			//}
 
-            DTEHelper.Current.SelectionPage = TextViewHost.TextView.Selection;
+			//DTEHelper.Current.SelectionPage = TextViewHost.TextView.Selection;
 
-            IntellisenseHelper.SetFile(file);
+			//IntellisenseHelper.SetFile(file);
 
             TextViewHost.HostControl.MouseDoubleClick += HostControl_MouseDoubleClick;
 
             Refresh();
-            DTEHelper.Current.SetStatusBarText(EncodingDecide.DecideFileEncoding(DTEHelper.Current.DTE.ActiveDocument.FullName).ToString());
+            //DTEHelper.Current.SetStatusBarText(EncodingDecide.DecideFileEncoding(DTEHelper.Current.DTE.ActiveDocument.FullName).ToString());
 
             //DTEHelper.Current.DTE.ActiveDocument.ActiveWindow.Caption += string.Format("({0})", EncodingDecide.DecideFileEncoding(DTEHelper.Current.DTE.ActiveDocument.FullName).ToString());
         }

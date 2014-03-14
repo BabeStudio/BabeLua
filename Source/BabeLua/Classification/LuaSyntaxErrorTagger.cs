@@ -26,10 +26,9 @@ namespace LuaLanguage.Classification
         }
     }
 
-    internal sealed class LuaSyntaxErrorTagger : ITagger<LuaErrorTag>, IDisposable
+    internal sealed class LuaSyntaxErrorTagger : ITagger<LuaErrorTag>
     {
         ITextBuffer buffer;
-        //ITextSnapshot snapshot;
         List<Irony.Parsing.Token> errorTokens = new List<Irony.Parsing.Token>();
         Timer delayTimer;
         String msgParse;
@@ -41,10 +40,18 @@ namespace LuaLanguage.Classification
         public LuaSyntaxErrorTagger(ITextBuffer buffer)
         {
             this.buffer = buffer;
-            //this.snapshot = buffer.CurrentSnapshot;
-            this.ReParse();
-            this.buffer.Changed += BufferChanged;
+
+			Babe.Lua.Editor.TextViewCreationListener.FileContentChanged += TextViewCreationListener_FileContentChanged;
+
+			Irony.Parsing.Parser parser = new Irony.Parsing.Parser(LuaLanguage.LuaGrammar.Instance);
+			var tree = parser.Parse(buffer.CurrentSnapshot.GetText());
+			ReParse(tree);
         }
+
+		private void TextViewCreationListener_FileContentChanged(object sender, Irony.Parsing.ParseTree e)
+		{
+			ReParse(e);
+		}
 
         public IEnumerable<ITagSpan<LuaErrorTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
@@ -94,18 +101,16 @@ namespace LuaLanguage.Classification
             }
         }
 
-        private void ReParse()
+        private void ReParse(Irony.Parsing.ParseTree tree)
         {
             int previousCount = errorTokens.Count;
             errorTokens.Clear();
 
             ITextSnapshot newSnapshot = this.buffer.CurrentSnapshot;
-            string text = newSnapshot.GetText();
-
-            Irony.Parsing.Parser parser = new Irony.Parsing.Parser(grammar);
+            
             var newErrors = new List<Irony.Parsing.Token>();
-            var parseTree = parser.Parse(text);
-            foreach (var token in parseTree.Tokens)
+            
+			foreach (var token in tree.Tokens)
             {
                 if (token.IsError())
                 {
@@ -113,15 +118,15 @@ namespace LuaLanguage.Classification
                 }
             }
 
-            if (parseTree.HasErrors())
+            if (tree.HasErrors())
             {
-                var tok = parseTree.Tokens.Last();
+                var tok = tree.Tokens.Last();
                 errorTokens.Add(tok);
                 //if (tok.Length != 0)
                 //    errorTokens.Add(tok);
                 //else //it is EOF error so before the end(use -2)
-                //    errorTokens.Add(parseTree.Tokens[parseTree.Tokens.Count - 2]);
-                msgParse = parseTree.ParserMessages[0].ToString();
+                //    errorTokens.Add(tree.Tokens[tree.Tokens.Count - 2]);
+                msgParse = tree.ParserMessages[0].ToString();
             }
             else
                 msgParse = "";
@@ -133,38 +138,6 @@ namespace LuaLanguage.Classification
                         new SnapshotSpan(newSnapshot, 0, newSnapshot.Length)));
             }
         }
-
-        private void BufferChanged(object sender, TextContentChangedEventArgs e)
-        {
-            // If this isn't the most up-to-date version of the buffer, then ignore it for now (we'll eventually get another change event).
-            if (e.After != buffer.CurrentSnapshot)
-                return;
-
-            if (delayTimer != null)
-                delayTimer.Dispose();
-            //在文本停止变化1秒后重新扫描
-            delayTimer = new Timer(o => this.ReParse(), null, 1000, Timeout.Infinite);
-        }
-
-        #region IDisposable Members
-
-        void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                // dispose managed resources
-                if(delayTimer != null)
-                    delayTimer.Dispose();
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        #endregion
     }
 
     internal class LuaErrorTag : ErrorTag

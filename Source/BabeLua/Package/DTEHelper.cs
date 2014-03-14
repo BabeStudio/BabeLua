@@ -43,7 +43,7 @@ namespace Babe.Lua
             System.Windows.Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
 
             System.Windows.Forms.Application.ThreadException += Application_ThreadException;
-
+			
             docEvents = DTE.Events.DocumentEvents;
             //docEvents.DocumentOpening += DocumentEvents_DocumentOpening;
             //docEvents.DocumentClosing += VSPackage1Package_DocumentClosing;
@@ -61,8 +61,16 @@ namespace Babe.Lua
             dteEvents = DTE.Events.DTEEvents;
             dteEvents.OnStartupComplete += dteEvents_OnStartupComplete;
 
+			TextViewCreationListener.FileContentChanged += TextViewCreationListener_FileContentChanged;
+
 			UploadLog();
         }
+
+		void TextViewCreationListener_FileContentChanged(object sender, Irony.Parsing.ParseTree e)
+		{
+			IntellisenseHelper.Refresh(e);
+
+		}
 
 		void UploadLog()
 		{
