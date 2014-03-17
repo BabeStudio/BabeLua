@@ -7,7 +7,7 @@ using System.Linq;
 using System.Windows.Input;
 using System;
 using System.Windows.Forms;
-using LuaLanguage.DataModel;
+using Babe.Lua.DataModel;
 using Babe.Lua.Editor;
 
 namespace Babe.Lua.ToolWindows

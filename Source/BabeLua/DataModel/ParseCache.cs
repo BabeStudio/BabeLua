@@ -22,7 +22,7 @@ namespace Babe.Lua.DataModel
 
         public ParseTree Parse(ITextView textView)
         {
-            var parse = new Parser(LuaLanguage.LuaGrammar.Instance);
+            var parse = new Parser(Grammar.LuaGrammar.Instance);
             var tree = parse.Parse(textView.TextSnapshot.GetText());
 
             if (Trees.ContainsKey(textView))

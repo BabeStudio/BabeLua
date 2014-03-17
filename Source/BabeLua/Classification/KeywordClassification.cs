@@ -1,4 +1,4 @@
-﻿using LuaLanguage.DataModel;
+﻿using Babe.Lua.DataModel;
 using Microsoft.VisualStudio.Language.StandardClassification;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace LuaLanguage.Classification
+namespace Babe.Lua.Classification
 {
     class HighlightTag
     {

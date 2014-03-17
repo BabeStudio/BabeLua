@@ -11,7 +11,9 @@ using Microsoft.VisualStudio.Language.StandardClassification;
 using Microsoft.VisualStudio.Text.Adornments;
 using System.Threading;
 
-namespace LuaLanguage.Classification
+using Grammar;
+
+namespace Babe.Lua.Classification
 {
     [Export(typeof(ITaggerProvider))]
     [TagType(typeof(LuaErrorTag))]
@@ -32,7 +34,7 @@ namespace LuaLanguage.Classification
         List<Irony.Parsing.Token> errorTokens = new List<Irony.Parsing.Token>();
         String msgParse;
 
-        static Irony.Parsing.Grammar grammar = LuaLanguage.LuaGrammar.Instance;
+        static Irony.Parsing.Grammar grammar = LuaGrammar.Instance;
        
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
@@ -42,7 +44,7 @@ namespace LuaLanguage.Classification
 
 			Babe.Lua.Editor.TextViewCreationListener.FileContentChanged += TextViewCreationListener_FileContentChanged;
 
-			Irony.Parsing.Parser parser = new Irony.Parsing.Parser(LuaLanguage.LuaGrammar.Instance);
+			Irony.Parsing.Parser parser = new Irony.Parsing.Parser(LuaGrammar.Instance);
 			var tree = parser.Parse(buffer.CurrentSnapshot.GetText());
 			ReParse(tree);
         }

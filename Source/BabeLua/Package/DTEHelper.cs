@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using LuaLanguage.DataModel;
+using Babe.Lua.DataModel;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio;
@@ -194,7 +194,7 @@ namespace Babe.Lua
             }
             else if(!string.IsNullOrWhiteSpace(BabePackage.Setting.CurrentSetting))
             {
-                LuaLanguage.DataModel.IntellisenseHelper.Scan();
+                Babe.Lua.DataModel.IntellisenseHelper.Scan();
             }
 
             if (BabePackage.Setting.HideUselessViews)
@@ -319,7 +319,7 @@ namespace Babe.Lua
 
         void DocumentEvents_DocumentOpening(string DocumentPath, bool ReadOnly)
         {
-            //LuaLanguage.Helper.IntellisenseHelper.SetFile(DocumentPath);
+            //Babe.Lua.Helper.IntellisenseHelper.SetFile(DocumentPath);
         }
 
         public void ExecuteCmd(string cmd, string args = null)

@@ -9,10 +9,10 @@ using Microsoft.VisualStudio.Text.Tagging;
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Utilities;
 
-using LuaLanguage.DataModel;
+using Babe.Lua.DataModel;
 using Microsoft.VisualStudio.Text.Operations;
 
-namespace LuaLanguage
+namespace Babe.Lua
 {
     [Export(typeof(ICompletionSourceProvider))]
     [ContentType("Lua")]

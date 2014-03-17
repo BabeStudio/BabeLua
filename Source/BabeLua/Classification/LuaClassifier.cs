@@ -9,10 +9,12 @@ using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Language.StandardClassification;
 using System.Threading;
-using LuaLanguage.DataModel;
+using Babe.Lua.DataModel;
 using Irony.Parsing;
 
-namespace LuaLanguage.Classification
+using Grammar;
+
+namespace Babe.Lua.Classification
 {
     [Export(typeof(ITaggerProvider))]
     [ContentType("Lua")]
@@ -52,7 +54,7 @@ namespace LuaLanguage.Classification
     internal sealed class LuaClassifier : ITagger<ClassificationTag>
     {
         ITextBuffer _buffer;
-		LuaLanguage.LuaGrammar _grammar;
+		LuaGrammar _grammar;
         Irony.Parsing.Parser _parser;
         
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;

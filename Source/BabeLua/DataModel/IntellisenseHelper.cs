@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace LuaLanguage.DataModel
+namespace Babe.Lua.DataModel
 {
     /// <summary>
     /// 此对象需要项目间隔离

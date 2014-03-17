@@ -5,8 +5,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LuaLanguage;
-using LuaLanguage.DataModel;
+using Babe.Lua;
+using Babe.Lua.DataModel;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.OLE.Interop;
@@ -68,7 +68,7 @@ namespace Babe.Lua.Editor
 
 		void RefreshFile(object arg)
 		{
-			Irony.Parsing.Parser parser = new Irony.Parsing.Parser(LuaLanguage.LuaGrammar.Instance);
+			Irony.Parsing.Parser parser = new Irony.Parsing.Parser(Grammar.LuaGrammar.Instance);
 			var tree = parser.Parse(_cur.TextBuffer.CurrentSnapshot.GetText());
 
 			OnFileContentChanged(tree);

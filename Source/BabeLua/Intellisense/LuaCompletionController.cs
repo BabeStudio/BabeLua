@@ -11,11 +11,11 @@ using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio;
 using System.Runtime.InteropServices;
 
-using LuaLanguage.DataModel;
+using Babe.Lua.DataModel;
 using System.Threading;
 using Babe.Lua;
 
-namespace LuaLanguage
+namespace Babe.Lua
 {
     #region Command Filter
 

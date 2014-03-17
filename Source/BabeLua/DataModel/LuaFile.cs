@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Irony.Parsing;
 
-namespace LuaLanguage.DataModel
+namespace Babe.Lua.DataModel
 {
     class LuaFile:IEquatable<LuaFile>
     {

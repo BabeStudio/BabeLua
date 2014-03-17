@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LuaLanguage.DataModel
+namespace Babe.Lua.DataModel
 {
     class LuaMember : IEquatable<LuaMember>
     {

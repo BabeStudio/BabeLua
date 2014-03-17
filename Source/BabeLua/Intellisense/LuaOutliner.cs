@@ -8,7 +8,9 @@ using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
 using System.Threading;
 
-namespace LuaLanguage.Intellisense
+using Grammar;
+
+namespace Babe.Lua.Intellisense
 {
     [Export(typeof(ITaggerProvider))]
     [TagType(typeof(IOutliningRegionTag))]
@@ -37,7 +39,7 @@ namespace LuaLanguage.Intellisense
             
 			Babe.Lua.Editor.TextViewCreationListener.FileContentChanged += TextViewCreationListener_FileContentChanged;
 
-			Irony.Parsing.Parser parser = new Irony.Parsing.Parser(LuaLanguage.LuaGrammar.Instance);
+			Irony.Parsing.Parser parser = new Irony.Parsing.Parser(LuaGrammar.Instance);
 			var tree = parser.Parse(snapshot.GetText());
 			ReParse(tree);
         }

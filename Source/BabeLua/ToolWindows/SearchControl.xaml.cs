@@ -1,4 +1,4 @@
-﻿using LuaLanguage.DataModel;
+﻿using Babe.Lua.DataModel;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using System;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Irony.Parsing;
 
-namespace LuaLanguage
+namespace Grammar
 {
     [Language("Lua", "5.1", "Lua Script Language")]
     public class LuaGrammar : Irony.Parsing.Grammar
