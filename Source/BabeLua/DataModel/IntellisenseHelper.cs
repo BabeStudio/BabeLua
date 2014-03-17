@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using Babe.Lua.Package;
 
 namespace Babe.Lua.DataModel
 {

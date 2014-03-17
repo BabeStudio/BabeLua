@@ -30,7 +30,7 @@ namespace Babe.Lua.Classification
 
         public static void InitColors()
         {
-            var kw = Babe.Lua.BabePackage.Setting.KeyWords;
+            var kw = Babe.Lua.Package.BabePackage.Setting.KeyWords;
 
 			FunctionColor = kw.Function;
 			TableColor = kw.Table;

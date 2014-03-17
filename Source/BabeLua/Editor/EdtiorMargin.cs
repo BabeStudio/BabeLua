@@ -74,7 +74,7 @@ namespace Babe.Lua.Editor
     {
         public IWpfTextViewMargin CreateMargin(IWpfTextViewHost wpfTextViewHost, IWpfTextViewMargin marginContainer)
         {
-            DTEHelper.Current.SelectionPage = wpfTextViewHost.TextView.Selection;
+            Babe.Lua.Package.DTEHelper.Current.SelectionPage = wpfTextViewHost.TextView.Selection;
 
             CurrentMargin = new EditorMargin(wpfTextViewHost);
             OutlineMargins.Add(wpfTextViewHost.TextView, CurrentMargin);

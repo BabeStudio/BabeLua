@@ -8,7 +8,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Babe.Lua.Editor;
 
-namespace Babe.Lua
+namespace Babe.Lua.Package
 {
 	public static class SettingConstants
 	{

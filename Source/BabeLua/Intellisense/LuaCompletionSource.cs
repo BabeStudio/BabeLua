@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.Utilities;
 using Babe.Lua.DataModel;
 using Microsoft.VisualStudio.Text.Operations;
 
-namespace Babe.Lua
+namespace Babe.Lua.Intellisense
 {
     [Export(typeof(ICompletionSourceProvider))]
     [ContentType("Lua")]

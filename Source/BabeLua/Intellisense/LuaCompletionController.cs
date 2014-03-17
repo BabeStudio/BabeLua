@@ -15,7 +15,7 @@ using Babe.Lua.DataModel;
 using System.Threading;
 using Babe.Lua;
 
-namespace Babe.Lua
+namespace Babe.Lua.Intellisense
 {
     #region Command Filter
 

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Babe.Lua
+namespace Babe.Lua.Package
 {
     public class WindowFrameSink : IVsWindowFrameNotify
     {

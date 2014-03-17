@@ -14,7 +14,7 @@ using EnvDTE;
 using Microsoft.VisualStudio.CommandBars;
 using Babe.Lua.Editor;
 
-namespace Babe.Lua
+namespace Babe.Lua.Package
 {
     #region Properties
     [PackageRegistration(UseManagedResourcesOnly = true)]
@@ -55,7 +55,7 @@ namespace Babe.Lua
     //[ProvideAutoLoad(UIContextGuids.SolutionExists)]
     [Guid(GuidList.PkgString)]
     #endregion
-    public sealed class BabePackage : Package
+    public sealed class BabePackage : Microsoft.VisualStudio.Shell.Package
     {
         DTEHelper events;
         OleComponent OleCom;

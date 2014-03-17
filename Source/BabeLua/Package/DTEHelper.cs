@@ -16,7 +16,7 @@ using Microsoft.VisualStudio;
 using Babe.Lua.Editor;
 using System.IO;
 
-namespace Babe.Lua
+namespace Babe.Lua.Package
 {
     class DTEHelper
     {

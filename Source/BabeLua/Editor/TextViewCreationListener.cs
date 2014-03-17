@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Babe.Lua;
+using Babe.Lua.Package;
 using Babe.Lua.DataModel;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Language.Intellisense;
@@ -29,7 +30,7 @@ namespace Babe.Lua.Editor
 
 		public static event EventHandler<Irony.Parsing.ParseTree> FileContentChanged;
 
-		CompletionCommandFilter CompletionFilter;
+		Babe.Lua.Intellisense.CompletionCommandFilter CompletionFilter;
 
 		System.Threading.Timer DelayRefreshTimer;
 
@@ -45,7 +46,7 @@ namespace Babe.Lua.Editor
 			view.Closed += view_Closed;
 			view.TextBuffer.Changed += TextBuffer_Changed;
 
-			CompletionFilter = new CompletionCommandFilter(view, CompletionBroker);
+			CompletionFilter = new Intellisense.CompletionCommandFilter(view, CompletionBroker);
 
 			IOleCommandTarget next;
 			textViewAdapter.AddCommandFilter(CompletionFilter, out next);

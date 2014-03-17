@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Grammar;
+using Babe.Lua.Package;
 
 namespace Babe.Lua.DataModel
 {
@@ -132,8 +133,8 @@ namespace Babe.Lua.DataModel
                                 {
                                     var func = exp.ChildNodes[0].Token.ValueString;
 
-									if(func == Babe.Lua.BabePackage.Setting.ClassDefinition
-										|| func == Babe.Lua.BabePackage.Setting.ClassConstructor)
+									if(func == BabePackage.Setting.ClassDefinition
+										|| func == BabePackage.Setting.ClassConstructor)
 									{
 										
 										string ClassName = null;

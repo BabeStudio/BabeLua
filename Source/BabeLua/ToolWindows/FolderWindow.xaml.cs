@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Windows.Input;
+using Babe.Lua.Package;
 
 namespace Babe.Lua.ToolWindows
 {

@@ -9,6 +9,7 @@ using System;
 using System.Windows.Forms;
 using Babe.Lua.DataModel;
 using Babe.Lua.Editor;
+using Babe.Lua.Package;
 
 namespace Babe.Lua.ToolWindows
 {

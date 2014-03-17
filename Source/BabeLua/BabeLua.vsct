@@ -100,7 +100,7 @@
 				</Strings>
 			</Button>
 
-			<Button guid="guidCmdSet" id="cmdidOutline" priority="0x0100" type="Button">
+			<Button guid="guidCmdSet" id="cmdidOutline" priority="0x0101" type="Button">
 				<Parent guid="guidCmdSet" id="MyMenuViewGroup"/>
 				<Strings>
 					<ButtonText>Outline Explorer</ButtonText>
@@ -114,21 +114,21 @@
 				</Strings>
 			</Button>
 
-			<Button guid="guidCmdSet" id="cmdidSetting" priority="0x0100" type="Button">
+			<Button guid="guidCmdSet" id="cmdidSetting" priority="0x0102" type="Button">
 				<Parent guid="guidCmdSet" id="MyMenuViewGroup"/>
 				<Strings>
 					<ButtonText>Settings</ButtonText>
 				</Strings>
 			</Button>
 
-			<Button guid="guidCmdSet" id="cmdidSearch1" priority="0x0100" type="Button">
+			<Button guid="guidCmdSet" id="cmdidSearch1" priority="0x0103" type="Button">
 				<Parent guid="guidCmdSet" id="MyMenuViewGroup"/>
 				<Strings>
 					<ButtonText>Search Result 1</ButtonText>
 				</Strings>
 			</Button>
 
-			<Button guid="guidCmdSet" id="cmdidSearch2" priority="0x0100" type="Button">
+			<Button guid="guidCmdSet" id="cmdidSearch2" priority="0x0104" type="Button">
 				<Parent guid="guidCmdSet" id="MyMenuViewGroup"/>
 				<Strings>
 					<ButtonText>Search Result 2</ButtonText>
