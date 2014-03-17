@@ -49,10 +49,10 @@ namespace Babe.Lua
             //docEvents.DocumentClosing += VSPackage1Package_DocumentClosing;
 
             //VS关闭命令事件
-            cmdEvents = DTE.Events.CommandEvents["{5EFC7975-14BC-11CF-9B2B-00AA00573819}", 229];
-            cmdEvents.BeforeExecute += cmdEvents_BeforeExecute;
+            //cmdEvents = DTE.Events.CommandEvents["{5EFC7975-14BC-11CF-9B2B-00AA00573819}", 229];
+            //cmdEvents.BeforeExecute += cmdEvents_BeforeExecute;
             
-            solEvents = DTE.Events.SolutionEvents;
+            //solEvents = DTE.Events.SolutionEvents;
             //solEvents.Opened += solEvents_Opened;
             
             wndEvents = DTE.Events.WindowEvents;
@@ -177,13 +177,22 @@ namespace Babe.Lua
 
         void dteEvents_OnStartupComplete()
         {
-            if (string.IsNullOrWhiteSpace(BabePackage.Setting.CurrentSetting))
+            if (BabePackage.Setting.IsFirstRun)
             {
-                BabePackage.Current.ShowSettingWindow(null,null);
-                BabePackage.Current.ShowFolderWindow(null, null);
-                BabePackage.Current.ShowOutlineWindow(null, null);
+				var ret = System.Windows.MessageBox.Show("Do you want BabeLua tool windows open automatically ?", "BabeLua", System.Windows.MessageBoxButton.YesNo);
+				if (ret == System.Windows.MessageBoxResult.Yes)
+				{
+					BabePackage.Current.ShowFolderWindow(null, null);
+					BabePackage.Current.ShowOutlineWindow(null, null);
+					BabePackage.Current.ShowSearchWindow1(null, null);
+					BabePackage.Current.ShowSettingWindow(null, null);
+				}
+				else
+				{
+					System.Windows.MessageBox.Show("BabeLua tool windows would not open automatically.\r\nYou can open them with menu [LUA] -> [Views].");
+				}
             }
-            else
+            else if(!string.IsNullOrWhiteSpace(BabePackage.Setting.CurrentSetting))
             {
                 LuaLanguage.DataModel.IntellisenseHelper.Scan();
             }
@@ -193,7 +202,7 @@ namespace Babe.Lua
                 HiddenVSWindows();
             }
 
-            //打开上次关闭时打开的文件
+            //打开上次关闭前打开的文件
         }
 
         ISearchWnd CurrentSearchWnd;

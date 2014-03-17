@@ -49,8 +49,8 @@ namespace Babe.Lua
         Orientation = ToolWindowOrientation.none,
         Window = ToolWindowGuids80.StartPage
         )]
-    [ProvideToolWindowVisibility(typeof(FolderWndPane), "f1536ef8-92ec-443c-9ed7-fdadf150da82")]
-    [ProvideToolWindowVisibility(typeof(OutlineWndPane), "f1536ef8-92ec-443c-9ed7-fdadf150da82")]
+    //[ProvideToolWindowVisibility(typeof(FolderWndPane), "f1536ef8-92ec-443c-9ed7-fdadf150da82")]
+    //[ProvideToolWindowVisibility(typeof(OutlineWndPane), "f1536ef8-92ec-443c-9ed7-fdadf150da82")]
     [ProvideAutoLoad(UIContextGuids.NoSolution)]
     //[ProvideAutoLoad(UIContextGuids.SolutionExists)]
     [Guid(GuidList.PkgString)]
@@ -77,10 +77,7 @@ namespace Babe.Lua
 
             AddCommandBars();
 
-            if (Setting.HideUselessViews)
-            {
-                HiddenToolBars();
-            }
+            HideToolBars();
         }
 
         #region Menu Events Handler
@@ -314,39 +311,45 @@ namespace Babe.Lua
             }
         }
 
-        void HiddenToolBars()
+        void HideToolBars()
         {
             var cmdBars = (CommandBars)DTEHelper.Current.DTE.CommandBars;
+			var menu = cmdBars.ActiveMenuBar;
 
-            foreach (CommandBar bar in cmdBars)
-            {
-                if (bar.Type != MsoBarType.msoBarTypeMenuBar)
-                {
-                    bar.Enabled = false;
-                }
-            }
-            
-            var menu = cmdBars.ActiveMenuBar;
-            foreach (CommandBarControl bar in menu.Controls)
-            {
-                bar.Visible = false;
-            }
+			if (Setting.HideUselessViews)
+			{
+				foreach (CommandBar bar in cmdBars)
+				{
+					if (bar.Type != MsoBarType.msoBarTypeMenuBar)
+					{
+						bar.Enabled = false;
+					}
+				}
 
-            menu.Controls["File"].Visible = true;
-            menu.Controls["Edit"].Visible = true;
-            menu.Controls["Lua"].Visible = true;
-            menu.Controls["Window"].Visible = true;
-            menu.Controls["Help"].Visible = true;
-            menu.Controls["Tools"].Visible = true;
+				foreach (CommandBarControl bar in menu.Controls)
+				{
+					bar.Visible = false;
+				}
 
-            var file = menu.Controls["File"] as CommandBarPopup;
-            foreach (CommandBarControl btn in file.Controls)
-            {
-                btn.Visible = false;
-            }
-            file.Controls["Close"].Visible = true;
-            file.Controls["Recent Files"].Visible = true;
-            file.Controls["Exit"].Visible = true;
+				menu.Controls["File"].Visible = true;
+				menu.Controls["Edit"].Visible = true;
+				menu.Controls["Lua"].Visible = true;
+				menu.Controls["Window"].Visible = true;
+				menu.Controls["Help"].Visible = true;
+				menu.Controls["Tools"].Visible = true;
+
+				var file = menu.Controls["File"] as CommandBarPopup;
+				foreach (CommandBarControl btn in file.Controls)
+				{
+					btn.Visible = false;
+				}
+				file.Controls["Close"].Visible = true;
+				file.Controls["Recent Files"].Visible = true;
+				file.Controls["Exit"].Visible = true;
+			}
+
+			var lua = menu.Controls["Lua"] as CommandBarPopup;
+			lua.Controls["ShotKeys"].Visible = false;
         }
 
         void AddCommandBars()
@@ -355,7 +358,18 @@ namespace Babe.Lua
             OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (null != mcs)
             {
-                // Create the command for the tool window
+				CommandID outlineCmdID = new CommandID(GuidList.CmdSetString, (int)PkgCmdIDList.OutlineWindow);
+				MenuCommand menuOutlineWin = new MenuCommand(ShowOutlineWindow, outlineCmdID);
+				mcs.AddCommand(menuOutlineWin);
+
+				CommandID folderCmdID = new CommandID(GuidList.CmdSetString, (int)PkgCmdIDList.FolderWindow);
+				MenuCommand menuFolderWin = new MenuCommand(ShowFolderWindow, folderCmdID);
+				mcs.AddCommand(menuFolderWin);
+
+				CommandID settingCmdID = new CommandID(GuidList.CmdSetString, (int)PkgCmdIDList.SettingWindow);
+				MenuCommand menuSettingWin = new MenuCommand(ShowSettingWindow, settingCmdID);
+				mcs.AddCommand(menuSettingWin);
+
                 CommandID Search1CmdID = new CommandID(GuidList.CmdSetString, (int)PkgCmdIDList.SearchWindow1);
                 MenuCommand menuSearch1Win = new MenuCommand(ShowSearchWindow1, Search1CmdID);
                 mcs.AddCommand(menuSearch1Win);
@@ -363,18 +377,6 @@ namespace Babe.Lua
                 CommandID Search2CmdID = new CommandID(GuidList.CmdSetString, (int)PkgCmdIDList.SearchWindow2);
                 MenuCommand menuSearch2Win = new MenuCommand(ShowSearchWindow2, Search2CmdID);
                 mcs.AddCommand(menuSearch2Win);
-
-                CommandID outlineCmdID = new CommandID(GuidList.CmdSetString, (int)PkgCmdIDList.OutlineWindow);
-                MenuCommand menuOutlineWin = new MenuCommand(ShowOutlineWindow, outlineCmdID);
-                mcs.AddCommand(menuOutlineWin);
-
-                CommandID folderCmdID = new CommandID(GuidList.CmdSetString, (int)PkgCmdIDList.FolderWindow);
-                MenuCommand menuFolderWin = new MenuCommand(ShowFolderWindow, folderCmdID);
-                mcs.AddCommand(menuFolderWin);
-
-                CommandID settingCmdID = new CommandID(GuidList.CmdSetString, (int)PkgCmdIDList.SettingWindow);
-                MenuCommand menuSettingWin = new MenuCommand(ShowSettingWindow, settingCmdID);
-                mcs.AddCommand(menuSettingWin);
 
                 CommandID runCmdID = new CommandID(GuidList.CmdSetString, (int)PkgCmdIDList.RunLuaExecutable);
                 MenuCommand menuRun = new MenuCommand(RunLuaExecutable, runCmdID);
@@ -429,8 +431,7 @@ namespace Babe.Lua
 
         public int Close()
         {
-            throw new NotImplementedException();
-
+			return VSConstants.S_OK;
         }
 
         public new object GetService(Type service)
@@ -448,6 +449,7 @@ namespace Babe.Lua
             }
         }
     }
+
     public class KeyBindingSet
     {
         public string key;
@@ -459,6 +461,7 @@ namespace Babe.Lua
             this.key = key;
         }
     }
+
     public class LuaSet
     {
 		public string Name;
