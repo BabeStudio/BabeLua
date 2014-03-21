@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grammar
+namespace Babe.Lua.Grammar
 {
     public static class LuaTerminalNames
     {

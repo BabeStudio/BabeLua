@@ -162,7 +162,9 @@ namespace Babe.Lua.TextMarker
 		public void UpdateAtPosition(int line, int column, int length)
 		{
 			if (line >= this.View.TextSnapshot.LineCount || line < 0) return;
-			UpdateAtPosition(this.View.TextSnapshot.GetLineFromLineNumber(line).Start + column, length);
+			var TextLine = this.View.TextSnapshot.GetLineFromLineNumber(line);
+			if (TextLine.Length <= column + length) return;
+			UpdateAtPosition(TextLine.Start + column, length);
 		}
 
         void SynchronousUpdate(SnapshotPoint currentRequest, NormalizedSnapshotSpanCollection newSpans, SnapshotSpan? newCurrentWord)

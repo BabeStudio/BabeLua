@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
 	<Metadata>
-		<Identity Id="ef2b9b1b-2d16-4088-95d9-904637d77b19" Version="1.0.4" Language="en-US" Publisher="Boyaa"/>
+		<Identity Id="ef2b9b1b-2d16-4088-95d9-904637d77b19" Version="1.0.5" Language="en-US" Publisher="Boyaa"/>
 		<DisplayName>BabeLua</DisplayName>
 		<Description xml:space="preserve">babe lua tools for visual studio</Description>
 		<Icon>Resources\Package.ico</Icon>
+		<PreviewImage>Resources\Package.ico</PreviewImage>
 	</Metadata>
 	<Installation>
 		<InstallationTarget Version="[11.0,12.0]" Id="Microsoft.VisualStudio.Premium" />

@@ -22,7 +22,7 @@ namespace System
 
             // 不区分大小写
             source = source.ToLowerInvariant();
-            search = search.ToLowerInvariant();
+			search = search.ToLowerInvariant();
 
             if (source.Contains(search)) return true;
             else return false;

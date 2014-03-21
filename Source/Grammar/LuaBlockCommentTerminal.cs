@@ -5,7 +5,7 @@ using System.Text;
 using Irony.Parsing;
 using System.Text.RegularExpressions;
 
-namespace Grammar
+namespace Babe.Lua.Grammar
 {
     public class LuaCommentTerminal : Terminal
     {

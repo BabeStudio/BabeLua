@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Grammar;
+using Babe.Lua.Grammar;
 using Babe.Lua.Package;
 
 namespace Babe.Lua.DataModel
@@ -18,26 +18,31 @@ namespace Babe.Lua.DataModel
         {
             if (!System.IO.File.Exists(file))
                 return;
+			try
+			{
+				FileStream fileStream = System.IO.File.Open(file, FileMode.Open, FileAccess.Read, FileShare.None);
 
-            FileStream fileStream = System.IO.File.Open(file, FileMode.Open, FileAccess.Read, FileShare.None);
-            if (fileStream == null)
-                return;
-            using (StreamReader reader = new StreamReader(fileStream))
-            {
-                var parser = new Parser(LuaGrammar.Instance);
-                var tree = parser.Parse(reader.ReadToEnd());
-                var root = tree.Root;
-                if (root != null)
-                {
-                    File = new LuaFile(file, tree.Tokens);
-                    RefreshTree(root);
-                    FileManager.Instance.AddFile(File);
-                }
-                else
-                {
-                    System.Diagnostics.Debug.Print("***********error***********" + file);
-                }
-            }
+				using (StreamReader reader = new StreamReader(fileStream))
+				{
+					var parser = new Parser(LuaGrammar.Instance);
+					var tree = parser.Parse(reader.ReadToEnd());
+					var root = tree.Root;
+					if (root != null)
+					{
+						File = new LuaFile(file, tree.Tokens);
+						RefreshTree(root);
+						FileManager.Instance.AddFile(File);
+					}
+					else
+					{
+						System.Diagnostics.Debug.Print("***********error***********" + file);
+					}
+				}
+			}
+			catch(Exception e) 
+			{
+				Setting.Instance.LogError(e);
+			}
         }
 
         public void Refresh(ParseTree tree)
@@ -82,7 +87,7 @@ namespace Babe.Lua.DataModel
                             if (table.ChildNodes[0].Term.Name == LuaTerminalNames.Var && table.ChildNodes[0].ChildNodes.Count == 1)
                             {
                                 var tbname = table.ChildNodes[0].ChildNodes[0].Token.ValueString;
-
+								
                                 var luatable = File.GetTable(tbname);
                                 if (luatable != null)
                                 {
@@ -116,87 +121,116 @@ namespace Babe.Lua.DataModel
                         {
                             var token = var.ChildNodes[0].Token;
                             exp = exp.ChildNodes[0];
-                            if (exp.Term.Name == LuaTerminalNames.NamelessFunction)// name = function(...)
-                            {
-                                File.Members.Add(new LuaFunction(File, token.ValueString, token.Location.Line, GetFunctionArgs(exp.ChildNodes[1])));
-                            }
-                            else if (exp.Term.Name == LuaTerminalNames.TableConstructor)// name = {...}
-                            {
-                                HandleTableConstructor(token, exp);
-                            }
-                            //特殊处理一下class和new方法，作为table处理    name = class(..) | name = new(..)
-                            else if (exp.Term.Name == LuaTerminalNames.PrefixExpr && exp.ChildNodes[0].Term.Name == LuaTerminalNames.FunctionCall && exp.ChildNodes[0].ChildNodes.Count == 2)
-                            {
-								var args = exp.ChildNodes[0].ChildNodes[1];
-                                exp = exp.ChildNodes[0].ChildNodes[0].ChildNodes[0];
-                                if (exp.ChildNodes[0].Term.Name == LuaTerminalNames.Identifier)
-                                {
-                                    var func = exp.ChildNodes[0].Token.ValueString;
-
-									if(func == BabePackage.Setting.ClassDefinition
-										|| func == BabePackage.Setting.ClassConstructor)
-									{
-										
-										string ClassName = null;
-										if (args.ChildNodes.Count == 3
-											&& args.ChildNodes[1].ChildNodes.Count > 0
-											&& args.ChildNodes[1].ChildNodes[0].ChildNodes.Count == 1)
-										{
-											exp = args.ChildNodes[1].ChildNodes[0].ChildNodes[0].ChildNodes[0].ChildNodes[0];
-											if (exp.Term.Name == LuaTerminalNames.PrefixExpr
-												&& exp.ChildNodes[0].Term.Name == LuaTerminalNames.Var
-												&& exp.ChildNodes[0].ChildNodes.Count == 1)
-											{
-												ClassName = exp.ChildNodes[0].ChildNodes[0].Token.ValueString;
-											}
-										}
-										//LuaTable father = null;
-										//if (!string.IsNullOrEmpty(ClassName)) father = IntellisenseHelper.GetTable(ClassName);
-										if (ClassName != null)
-										{
-											File.AddTable(new LuaTable(File, ClassName, token.ValueString, token.Location.Line));
-										}
-										else
-										{
-											File.AddTable(new LuaTable(File, token.ValueString, token.Location.Line));
-										}
-									}
-									else
-									{
-										File.Members.Add(new LuaMember(token));
-									}
-
-									//if (func == Babe.Lua.BabePackage.Setting.ClassDefinition || func == Babe.Lua.BabePackage.Setting.ClassConstructor)
-									//{
-										
-									//	File.AddTable(new LuaTable(token.ValueString, token.Location.Line));
-									//}
-									//else
-									//{
-									//	File.Members.Add(new LuaMember(token));
-									//}
-                                }
-                            }
-                            else
-                            {
-                                File.Members.Add(new LuaMember(token));
-                            }
+							HandleAssign(token, exp);
                         }
                     }
                 }
                 #endregion
-                #region function XXX(..)
+                #region function XXX(..) || local function XXX(...)
                 else if (child.Term.Name == LuaTerminalNames.NamedFunction)
                 {
                     HandleNamedFunction(child);
                 }
-                #endregion
-                else
-                {
-                    RefreshTree(child);
-                }
+				else if (child.Term.Name == LuaTerminalNames.LocalVar)
+				{
+					if (child.ChildNodes[1].Term.Name == LuaTerminalNames.NamedFunction)
+					{
+						HandleNamedFunction(child.ChildNodes[1]);
+					}
+					else
+					{
+						var namelist = child.ChildNodes[1].ChildNodes;
+						var explist = child.ChildNodes[2].ChildNodes[0].ChildNodes;
+						if (explist.Count == 2)
+						{
+							explist = explist[1].ChildNodes;
+							var length = namelist.Count > explist.Count ? explist.Count : namelist.Count;
+
+							for (int i = 0; i < length; i++)
+							{
+								var name = namelist[i];
+								var exp = explist[i];
+								HandleAssign(name.Token, exp);
+							}
+						}
+					}
+				}
+				#endregion
+				else
+				{
+					RefreshTree(child);
+				}
             }
         }
+
+		void HandleAssign(Token token, ParseTreeNode exp)
+		{
+			if (exp.Term.Name == LuaTerminalNames.NamelessFunction)// name = function(...)
+			{
+				File.Members.Add(new LuaFunction(File, token.ValueString, token.Location.Line, GetFunctionArgs(exp.ChildNodes[1])));
+			}
+			else if (exp.Term.Name == LuaTerminalNames.TableConstructor)// name = {...}
+			{
+				HandleTableConstructor(token, exp);
+			}
+			//特殊处理一下class和new方法，作为table处理    name = class(..) | name = new(..)
+			else if (exp.Term.Name == LuaTerminalNames.PrefixExpr && exp.ChildNodes[0].Term.Name == LuaTerminalNames.FunctionCall && exp.ChildNodes[0].ChildNodes.Count == 2)
+			{
+				var args = exp.ChildNodes[0].ChildNodes[1];
+				exp = exp.ChildNodes[0].ChildNodes[0].ChildNodes[0];
+				if (exp.ChildNodes[0].Term.Name == LuaTerminalNames.Identifier)
+				{
+					var func = exp.ChildNodes[0].Token.ValueString;
+
+					if (func == BabePackage.Setting.ClassDefinition
+						|| func == BabePackage.Setting.ClassConstructor)
+					{
+
+						string ClassName = null;
+						if (args.ChildNodes.Count == 3
+							&& args.ChildNodes[1].ChildNodes.Count > 0
+							&& args.ChildNodes[1].ChildNodes[0].ChildNodes.Count == 1)
+						{
+							exp = args.ChildNodes[1].ChildNodes[0].ChildNodes[0].ChildNodes[0].ChildNodes[0];
+							if (exp.Term.Name == LuaTerminalNames.PrefixExpr
+								&& exp.ChildNodes[0].Term.Name == LuaTerminalNames.Var
+								&& exp.ChildNodes[0].ChildNodes.Count == 1)
+							{
+								ClassName = exp.ChildNodes[0].ChildNodes[0].Token.ValueString;
+							}
+						}
+						//LuaTable father = null;
+						//if (!string.IsNullOrEmpty(ClassName)) father = IntellisenseHelper.GetTable(ClassName);
+						if (ClassName != null)
+						{
+							File.AddTable(new LuaTable(File, ClassName, token.ValueString, token.Location.Line));
+						}
+						else
+						{
+							File.AddTable(new LuaTable(File, token.ValueString, token.Location.Line));
+						}
+					}
+					else
+					{
+						File.Members.Add(new LuaMember(token));
+					}
+
+					//if (func == Babe.Lua.BabePackage.Setting.ClassDefinition || func == Babe.Lua.BabePackage.Setting.ClassConstructor)
+					//{
+
+					//	File.AddTable(new LuaTable(token.ValueString, token.Location.Line));
+					//}
+					//else
+					//{
+					//	File.Members.Add(new LuaMember(token));
+					//}
+				}
+			}
+			else
+			{
+				File.Members.Add(new LuaMember(token));
+			}
+		}
 
         void HandleTableConstructor(Token token, ParseTreeNode node)
         {
@@ -250,8 +284,6 @@ namespace Babe.Lua.DataModel
                 if (child.Term.Name == name) result.Add(child);
                 FilterChildren(child, name, ref result, level);
             }
-
-            
 
             return;
         }

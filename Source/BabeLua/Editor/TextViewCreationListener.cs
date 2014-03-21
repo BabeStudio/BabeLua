@@ -20,7 +20,7 @@ namespace Babe.Lua.Editor
 	[Export(typeof(IVsTextViewCreationListener))]
 	[ContentType("Lua")]
 	[TextViewRole(PredefinedTextViewRoles.Interactive)]
-	internal sealed class TextViewCreationListener : IVsTextViewCreationListener
+	internal sealed class TextViewCreationListener : IVsTextViewCreationListener , IDisposable
 	{
 		[Import]
 		public IVsEditorAdaptersFactoryService AdaptersFactory { get; private set; }
@@ -117,5 +117,13 @@ namespace Babe.Lua.Editor
 		}
 
 		static IWpfTextView _cur;
+
+		public void Dispose()
+		{
+			if (DelayRefreshTimer != null)
+			{
+				DelayRefreshTimer.Dispose();
+			}
+		}
 	}
 }

@@ -12,7 +12,7 @@ using System.Threading;
 using Babe.Lua.DataModel;
 using Irony.Parsing;
 
-using Grammar;
+using Babe.Lua.Grammar;
 
 namespace Babe.Lua.Classification
 {

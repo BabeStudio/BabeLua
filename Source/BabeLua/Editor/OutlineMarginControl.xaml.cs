@@ -109,18 +109,18 @@ namespace Babe.Lua.Editor
             {
                 BabePackage.Setting.IsFirstRun = false;
                 MessageBox.Show("press <Ctrl> key to search words in current file\r\npress <Alt> key to search in all files", "Tips");
-                DTEHelper.Current.FindSelectTokenRef(false);
-                DTEHelper.Current.OpenDocument(DTEHelper.Current.DTE.ActiveDocument.FullName);
+                //DTEHelper.Current.FindSelectTokenRef(false);
+                //DTEHelper.Current.OpenDocument(DTEHelper.Current.DTE.ActiveDocument.FullName);
             }
             else if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
             {
                 DTEHelper.Current.FindSelectTokenRef(false);
-                DTEHelper.Current.OpenDocument(DTEHelper.Current.DTE.ActiveDocument.FullName);
+                //DTEHelper.Current.OpenDocument(DTEHelper.Current.DTE.ActiveDocument.FullName);
             }
             else if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt))
             {
                 DTEHelper.Current.FindSelectTokenRef(true);
-                DTEHelper.Current.OpenDocument(DTEHelper.Current.DTE.ActiveDocument.FullName);
+                //DTEHelper.Current.OpenDocument(DTEHelper.Current.DTE.ActiveDocument.FullName);
             }
         }
 

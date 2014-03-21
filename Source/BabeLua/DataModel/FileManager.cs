@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Babe.Lua.Package;
-using Grammar;
+using Babe.Lua.Grammar;
 
 namespace Babe.Lua.DataModel
 {

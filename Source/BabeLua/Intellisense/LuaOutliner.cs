@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
 using System.Threading;
 
-using Grammar;
+using Babe.Lua.Grammar;
 
 namespace Babe.Lua.Intellisense
 {
@@ -70,11 +70,11 @@ namespace Babe.Lua.Intellisense
                         //the region starts at the beginning of the "[", and goes until the *end* of the line that contains the "]".
                         if (length > 0 && currentSnapshot.Length >= startLine.Start.Position + region.StartOffset + length)
                         {
-                            var preview = region.Preview == null ? ellipsis : region.Preview;
+							var preview = string.IsNullOrWhiteSpace(region.Preview) ? ellipsis : region.Preview;
                             yield return new TagSpan<IOutliningRegionTag>(
                             new SnapshotSpan(currentSnapshot,
                                 startLine.Start.Position + region.StartOffset, length),
-                            new OutliningRegionTag(region.IsCollapsed, false, preview, String.Empty));
+							new OutliningRegionTag(region.IsCollapsed, false, preview, currentSnapshot.GetText(startPosition, length)));
                         }
                     }
                 }
@@ -225,9 +225,9 @@ namespace Babe.Lua.Intellisense
                         region.StartOffset = 0;
 
                         region.EndLine = token.Location.Line + token.Text.Count(c=>{return c == '\n';});
-                        region.EndOffset = snapshot.GetLineFromLineNumber(region.EndLine).Length;
+						region.EndOffset = snapShot.GetLineFromLineNumber(region.EndLine).Length;
 
-                        region.Preview = snapshot.GetLineFromLineNumber(region.StartLine).GetText().Replace("--[[", "");
+						region.Preview = snapShot.GetLineFromLineNumber(region.StartLine).GetText().Replace("--[[", "");
 
                         region.IsCollapsed = true;
                     }

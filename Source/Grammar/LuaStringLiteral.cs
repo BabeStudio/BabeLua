@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Irony.Parsing;
-namespace Grammar
+namespace Babe.Lua.Grammar
 {
     class LuaStringLiteral : StringLiteral
     {

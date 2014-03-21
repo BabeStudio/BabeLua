@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.Language.StandardClassification;
 using Microsoft.VisualStudio.Text.Adornments;
 using System.Threading;
 
-using Grammar;
+using Babe.Lua.Grammar;
 
 namespace Babe.Lua.Classification
 {

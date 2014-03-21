@@ -682,7 +682,7 @@ namespace Babe.Lua.ToolWindows
 				{
 					edit_txtbox.Text = oldName;
 					BabePackage.Setting.LogError(ex);
-					MessageBox.Show(string.Format("rename fail.", "error"));
+					MessageBox.Show("rename fail.", "error");
 				}
 			}
 		}
@@ -757,42 +757,42 @@ namespace Babe.Lua.ToolWindows
         {
             try
             {
-				using (var stream = new FileStream(path, FileMode.CreateNew))
+				var stream = new FileStream(path, FileMode.CreateNew);
+				
+				//此处应当检测设置项，确定新建文件的编码格式
+				//由于不含中文的ANSI和UTF8编码一致，导致此文件会被VS认为是ANSI文件。
+				Encoding encoding;
+				switch (BabePackage.Current.CurrentSetting.Encoding)
 				{
-					//此处应当检测设置项，确定新建文件的编码格式
-					//由于不含中文的ANSI和UTF8编码一致，导致此文件会被VS认为是ANSI文件。
-					Encoding encoding;
-					switch (BabePackage.Current.CurrentSetting.Encoding)
-					{
-						case Editor.EncodingName.UTF8:
-							encoding = new UTF8Encoding(false);
-							break;
-						case Editor.EncodingName.UTF8_BOM:
-							encoding = Encoding.UTF8;
-							break;
-						case Editor.EncodingName.ANSI:
-							encoding = Encoding.Default;
-							break;
-						default:
-							encoding = new UTF8Encoding(false);
-							break;
-					}
-
-					using (var writer = new StreamWriter(stream, encoding))
-					{
-						try
-						{
-							writer.WriteLine(string.Format("--region {0}", Path.GetFileName(path)));
-							writer.WriteLine(string.Format("--Date {0}", System.DateTime.Now.Date.ToShortDateString()));
-							writer.WriteLine("--此文件由[BabeLua]插件自动生成");
-							writer.WriteLine();
-							writer.WriteLine();
-							writer.WriteLine();
-							writer.WriteLine("--endregion");
-						}
-						catch { }
-					}
+					case Editor.EncodingName.UTF8:
+						encoding = new UTF8Encoding(false);
+						break;
+					case Editor.EncodingName.UTF8_BOM:
+						encoding = Encoding.UTF8;
+						break;
+					case Editor.EncodingName.ANSI:
+						encoding = Encoding.Default;
+						break;
+					default:
+						encoding = new UTF8Encoding(false);
+						break;
 				}
+
+				using (var writer = new StreamWriter(stream, encoding))
+				{
+					try
+					{
+						writer.WriteLine(string.Format("--region {0}", Path.GetFileName(path)));
+						writer.WriteLine(string.Format("--Date {0}", System.DateTime.Now.Date.ToShortDateString()));
+						writer.WriteLine("--此文件由[BabeLua]插件自动生成");
+						writer.WriteLine();
+						writer.WriteLine();
+						writer.WriteLine();
+						writer.WriteLine("--endregion");
+					}
+					catch { }
+				}
+				
 				RefreshFiles(null, path.Replace(LuaPath + Path.DirectorySeparatorChar, ""));
             }
             catch 

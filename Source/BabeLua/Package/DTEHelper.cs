@@ -333,6 +333,15 @@ namespace Babe.Lua.Package
             DTE.StatusBar.Text = text;
         }
 
+		public void AddErrorToErrorListWindow(string error)
+		{
+			ErrorListProvider errorProvider = new ErrorListProvider(BabePackage.Current);
+			Microsoft.VisualStudio.Shell.Task newError = new Microsoft.VisualStudio.Shell.Task();
+			newError.Category = TaskCategory.BuildCompile;
+			newError.Text = error;
+			errorProvider.Tasks.Add(newError);
+		}
+
         public StatusBar GetStatusBar()
         {
             return DTE.StatusBar;

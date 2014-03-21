@@ -164,7 +164,7 @@
     <Compile Include="Editor\MarkPosGlyphFactoryProvider.cs" />
     <Compile Include="Editor\MarkPosTagger.cs" />
     <Compile Include="Editor\TextViewCreationListener.cs" />
-    <Compile Include="Helper\StringExtension.cs" />
+    <Compile Include="Extension\StringExtension.cs" />
     <Compile Include="Intellisense\LuaCompletionController.cs" />
     <Compile Include="Intellisense\LuaCompletionSource.cs" />
     <Compile Include="Intellisense\LuaOutliner.cs" />
@@ -246,6 +246,11 @@
     <None Include="Resources\Images.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Package.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Resource Include="Resources\StdPlugin.ico" />
     <Resource Include="Resources\search.png" />
     <Resource Include="Resources\UserKeyWords.xml" />
     <None Include="Resources\Setting.xml">
@@ -255,10 +260,6 @@
     <Resource Include="Resources\folder.png" />
     <Resource Include="Resources\copy.png" />
     <Resource Include="Resources\delete.png" />
-    <Content Include="Resources\Package.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Editor\OutlineMarginControl.xaml">
