@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Utilities;
+using Microsoft.VisualStudio.Text;
 
 namespace Babe.Lua.Editor
 {
@@ -55,6 +56,8 @@ namespace Babe.Lua.Editor
 			var filter = new CommandFilter(view);
 			textViewAdapter.AddCommandFilter(filter, out next);
 			filter.Next = next;
+
+			EditorReport.TextViewCreated(view);
 		}
 
 		void TextBuffer_Changed(object sender, Microsoft.VisualStudio.Text.TextContentChangedEventArgs e)
@@ -123,6 +126,35 @@ namespace Babe.Lua.Editor
 			if (DelayRefreshTimer != null)
 			{
 				DelayRefreshTimer.Dispose();
+			}
+		}
+	}
+
+	static class EditorReport
+	{
+		static bool _hasSendReport = false;
+		static int count = 0;
+
+		static void TextBuffer_Changed(object sender, Microsoft.VisualStudio.Text.TextContentChangedEventArgs e)
+		{
+			if (++count > 50)
+			{
+				var buf = sender as ITextBuffer;
+				if (buf != null) buf.Changed -= TextBuffer_Changed;
+				if (!_hasSendReport)
+				{
+					DTEHelper.Current.UpdateUserData("edit");
+					_hasSendReport = true;
+				}
+			}
+		}
+
+		public static void TextViewCreated(IWpfTextView view)
+		{
+			if (!_hasSendReport)
+			{
+				view.TextBuffer.Changed += TextBuffer_Changed;
+				count++;
 			}
 		}
 	}

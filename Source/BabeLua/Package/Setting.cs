@@ -12,12 +12,13 @@ namespace Babe.Lua.Package
 {
 	public static class SettingConstants
 	{
-		public const string SettingFolder = "BabeLua";
+		public const string Version = "W.1.0.6";
 
+		public const string SettingFolder = "BabeLua";
 		public const string SettingFile = "Setting.xml";
 		public const string UserKeywordsFile = "UserKeyWords.xml";
-
 		public const string ErrorLogFile = "ErrorLog.txt";
+		public const string GuidFile = "Guid";
 
 		public static class SettingKeys
 		{
@@ -94,6 +95,7 @@ namespace Babe.Lua.Package
 		public Dictionary<string, LuaSet> LuaSettings { get; private set; }
 
 		public bool IsFirstRun { get; set; }
+		public string UserGUID { get; private set; }
 
 		public bool HideUselessViews
 		{
@@ -294,6 +296,24 @@ namespace Babe.Lua.Package
 					stream.Write(Properties.Resources.UserKeyWords);
 				}
 			}
+
+			file = Path.Combine(folder, SettingConstants.GuidFile);
+			if (!File.Exists(file))
+			{
+				UserGUID = Guid.NewGuid().ToString();
+
+				using (var stream = File.CreateText(file))
+				{
+					stream.Write(UserGUID);
+				}
+			}
+			else
+			{
+				using (var stream = new StreamReader(file))
+				{
+					UserGUID = stream.ReadToEnd();
+				}
+			}
 		}
 
 		public void Save()
@@ -306,15 +326,18 @@ namespace Babe.Lua.Package
 			try
 			{
 				string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), SettingConstants.SettingFolder, SettingConstants.ErrorLogFile);
+				
+				Newtonsoft.Json.Linq.JObject json = new Newtonsoft.Json.Linq.JObject();
+				json["Version"] = SettingConstants.Version;
+				json["Guid"] = UserGUID;
+				json["Type"] = e.GetType().FullName;
+				json["Time"] = DateTime.Now.ToString();
+				json["Position"] = string.Format("{0}--->{1}", e.Source, e.TargetSite);
+				json["Message"] = e.Message;
+				json["StackTrace"] = e.StackTrace;
+				
 				using (StreamWriter writer = new StreamWriter(path, true, new UTF8Encoding(false)))
 				{
-					Newtonsoft.Json.Linq.JObject json = new Newtonsoft.Json.Linq.JObject();
-					json["Type"] = e.GetType().FullName;
-					json["Time"] = DateTime.Now.ToString();
-					json["Position"] = string.Format("{0}--->{1}", e.Source, e.TargetSite);
-					json["Message"] = e.Message;
-					json["StackTrace"] = e.StackTrace;
-					
 					writer.WriteLine(json.ToString());
 					writer.WriteLine();
 				}

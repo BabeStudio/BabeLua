@@ -51,5 +51,10 @@ namespace System
         {
             return char.IsLetterOrDigit(c) || c == '_' || (c >= 0x4e00 && c <= 0x9fff);
         }
+
+		public static bool IsIdentifier(this char c)
+		{
+			return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_';
+		}
     }
 }

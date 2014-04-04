@@ -6,6 +6,7 @@ using System.Text;
 using System.Linq;
 using System.Windows.Input;
 using Babe.Lua.Package;
+using System;
 
 namespace Babe.Lua.ToolWindows
 {
@@ -395,28 +396,28 @@ namespace Babe.Lua.ToolWindows
 			}
         }
 
-        private System.Timers.Timer _timerPreviewDocument = new System.Timers.Timer();
+		private System.Windows.Threading.DispatcherTimer _timerPreviewDocument;
         private string _strPreviewDocumentPath;
         private void SetPreviewDocumentTimerStart(string path)
         {
             _strPreviewDocumentPath = path;
 
-            _timerPreviewDocument = new System.Timers.Timer();
+			_timerPreviewDocument = new System.Windows.Threading.DispatcherTimer();
             // 循环间隔时间
-            _timerPreviewDocument.Interval = 1;
+			_timerPreviewDocument.Interval = TimeSpan.FromMilliseconds(1);
             // 允许Timer执行
-            _timerPreviewDocument.Enabled = true;
+			_timerPreviewDocument.IsEnabled = true;
             // 定义回调
-            _timerPreviewDocument.Elapsed += new System.Timers.ElapsedEventHandler(PreviewDocument);
-            _timerPreviewDocument.AutoReset = false;
+			_timerPreviewDocument.Tick += PreviewDocument;
         }
         // timer事件
-        private void PreviewDocument(object sender, System.Timers.ElapsedEventArgs e)
+        private void PreviewDocument(object sender, System.EventArgs e)
         {
             if (File.Exists(_strPreviewDocumentPath))
             {
                 DTEHelper.Current.PreviewDocument(_strPreviewDocumentPath);
             }
+			if (_timerPreviewDocument != null) _timerPreviewDocument.IsEnabled = false;
         }
 
         private void TreeView_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)

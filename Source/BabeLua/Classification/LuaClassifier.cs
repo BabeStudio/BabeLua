@@ -114,15 +114,21 @@ namespace Babe.Lua.Classification
                                 ClassificationTag tag;
                                 if (TryGetTag(token, out tag))
                                 {
-                                    var location = new SnapshotSpan(snapShot, line.Start.Position + token.Location.Position, token.Length);
-                                    yield return new TagSpan<ClassificationTag>(location, tag);
+									if (line.Start.Position + token.Location.Position + token.Length <= line.End.Position)
+									{
+										var location = new SnapshotSpan(snapShot, line.Start.Position + token.Location.Position, token.Length);
+										yield return new TagSpan<ClassificationTag>(location, tag);
+									}
                                 }
                             }
                         }
                         else if (token.Category == Irony.Parsing.TokenCategory.Comment)
                         {
-                            var location = new SnapshotSpan(snapShot, line.Start.Position + token.Location.Position, token.Length);
-                            yield return new TagSpan<ClassificationTag>(location, HighlightTag.GetTagWithTokenType(TokenType.Comment));
+							if (line.Start.Position + token.Location.Position + token.Length == line.End.Position)
+							{
+								var location = new SnapshotSpan(snapShot, line.Start.Position + token.Location.Position, token.Length);
+								yield return new TagSpan<ClassificationTag>(location, HighlightTag.GetTagWithTokenType(TokenType.Comment));
+							}
                         }
 
                         token = _parser.Scanner.VsReadToken(ref state);

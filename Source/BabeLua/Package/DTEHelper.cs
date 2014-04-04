@@ -73,66 +73,59 @@ namespace Babe.Lua.Package
 
 		void UploadLog()
 		{
-			System.Net.NetworkInformation.PhysicalAddress addr = null;
-			var ints = System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces();
-			foreach (var intf in ints)
+			UpdateUserData("run");
+
+			try
 			{
-				if (intf.OperationalStatus == System.Net.NetworkInformation.OperationalStatus.Up)
+				string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), SettingConstants.SettingFolder, SettingConstants.ErrorLogFile);
+
+				if (File.Exists(path))
 				{
-					addr = intf.GetPhysicalAddress();
-					break;
-				}
-			}
-			if (addr != null)
-			{
-				//发送给服务器，作为用户标识符
-				try
-				{
-					System.Net.HttpWebRequest req = System.Net.WebRequest.CreateHttp(string.Format("http://1.netchat.duapp.com/BabeLua?Address={0}", addr.ToString()));
+					StreamReader reader = new StreamReader(path, new UTF8Encoding(false));
+
+					byte[] dat = UTF8Encoding.UTF8.GetBytes("data=" + reader.ReadToEnd());
+					reader.Dispose();
+
+					System.Net.HttpWebRequest req = System.Net.WebRequest.CreateHttp("http://babelua.duapp.com/");
 					req.Method = "POST";
-					req.ContentLength = 0;
+					req.ContentLength = dat.Length;
+					req.ContentType = "application/x-www-form-urlencoded";
+					var resstream = req.GetRequestStream();
+					resstream.Write(dat, 0, dat.Length);
+					resstream.Dispose();
+
 					req.Timeout = 3000;
-					req.BeginGetResponse(null, null);
-				}
-				catch { }
-				try
-				{
-					string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), SettingConstants.SettingFolder, SettingConstants.ErrorLogFile);
-
-					if (File.Exists(path))
+					req.BeginGetResponse((ar) =>
 					{
-						StreamReader reader = new StreamReader(path, new UTF8Encoding(false));
+						var resp = req.EndGetResponse(ar) as System.Net.HttpWebResponse;
+						byte[] buf = new byte[resp.ContentLength];
+						var respstream = resp.GetResponseStream();
+						respstream.Read(buf, 0, buf.Length);
+						respstream.Dispose();
 
-						byte[] dat = UTF8Encoding.UTF8.GetBytes("data=" + reader.ReadToEnd());
-						reader.Dispose();
-							
-						System.Net.HttpWebRequest req = System.Net.WebRequest.CreateHttp("http://babelua.duapp.com/");
-						req.Method = "POST";
-						req.ContentLength = dat.Length;
-						req.ContentType = "application/x-www-form-urlencoded";
-						var resstream = req.GetRequestStream();
-						resstream.Write(dat, 0, dat.Length);
-						resstream.Dispose();
-
-						//req.Timeout = 3000;
-						req.BeginGetResponse((ar) =>
+						if (buf.Length == 1 && buf[0] == 49)
 						{
-							var resp = req.EndGetResponse(ar) as System.Net.HttpWebResponse;
-							byte[] buf = new byte[resp.ContentLength];
-							var respstream = resp.GetResponseStream();
-							respstream.Read(buf, 0, buf.Length);
-							respstream.Dispose();
-
-							if (buf.Length == 1 && buf[0] == 49)
-							{
-								File.Delete(path);
-							}
-							resp.Close();
-						}, null);
-					}
+							File.Delete(path);
+						}
+						resp.Close();
+					}, null);
 				}
-				catch { }
 			}
+			catch { }
+		}
+
+		public void UpdateUserData(string type)
+		{
+			try
+			{
+				System.Net.HttpWebRequest req = System.Net.WebRequest.CreateHttp(string.Format("http://babelua.duapp.com/user.php?type={0}&guid={1}&version={2}", type, BabePackage.Setting.UserGUID, SettingConstants.Version));
+				req.Method = "POST";
+				req.ContentLength = 0;
+				req.Timeout = 1000;
+				req.BeginGetResponse(null, null);
+				System.Diagnostics.Debug.Print("send user data:" + type);
+			}
+			catch { }
 		}
 
         void App_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)

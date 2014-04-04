@@ -17,35 +17,6 @@ using Babe.Lua;
 
 namespace Babe.Lua.Intellisense
 {
-    #region Command Filter
-
-	//[Export(typeof(IVsTextViewCreationListener))]
-	//[ContentType("Lua")]
-	//[TextViewRole(PredefinedTextViewRoles.Interactive)]
-	//internal sealed class VsTextViewCreationListener : IVsTextViewCreationListener
-	//{
-	//	[Import]
-	//	IVsEditorAdaptersFactoryService AdaptersFactory = null;
-
-	//	[Import]
-	//	ICompletionBroker CompletionBroker = null;
-
-	//	CompletionCommandFilter filter;
-
-	//	public void VsTextViewCreated(IVsTextView textViewAdapter)
-	//	{
-	//		var view = AdaptersFactory.GetWpfTextView(textViewAdapter);
-
-	//		Debug.Assert(view != null);
-
-	//		filter = new CompletionCommandFilter(view, CompletionBroker);
-            
-	//		IOleCommandTarget next;
-	//		textViewAdapter.AddCommandFilter(filter, out next);
-	//		filter.Next = next;
-	//	}
-	//}
-
     internal sealed class CompletionCommandFilter : IOleCommandTarget
     {
         ICompletionSession _currentSession;
@@ -98,36 +69,36 @@ namespace Babe.Lua.Intellisense
             if (!handled)
                 hresult = Next.Exec(pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
 
-            if (ErrorHandler.Succeeded(hresult))
-            {
-                if (pguidCmdGroup == VSConstants.VSStd2K)
-                {
-                    switch ((VSConstants.VSStd2KCmdID)nCmdID)
-                    {
-                        case VSConstants.VSStd2KCmdID.TYPECHAR:
-                            char ch = GetTypeChar(pvaIn);
-                            if (ch == '.' || ch == ':')
-                            {
-                                Cancel();
-                                StartSession();
-                            }
-                            else if (!ch.IsWord() && ch != '-')
-                                Cancel();
-                            else if (_currentSession == null)
-                                StartSession();
-                            else
-                                //if (_currentSession != null)
-                                Filter(false);
-                            break;
-                        case VSConstants.VSStd2KCmdID.BACKSPACE:
-                            //if (ShouldCancel())
-                                //Cancel();
-                            //else
-                                Filter(true);
-                            break;
-                    }
-                }
-            }
+			if (ErrorHandler.Succeeded(hresult))
+			{
+				if (pguidCmdGroup == VSConstants.VSStd2K)
+				{
+					switch ((VSConstants.VSStd2KCmdID)nCmdID)
+					{
+						case VSConstants.VSStd2KCmdID.TYPECHAR:
+							char ch = GetTypeChar(pvaIn);
+							if (ch == '.' || ch == ':')
+							{
+								Cancel();
+								StartSession();
+							}
+							else if (!ch.IsIdentifier())
+								Cancel();
+							else if (_currentSession == null)
+								StartSession();
+							else if (_currentSession != null)
+								Filter(false);
+							break;
+						case VSConstants.VSStd2KCmdID.BACKSPACE:
+						case VSConstants.VSStd2KCmdID.DELETE:
+							if (ShouldCancel())
+								Cancel();
+							else
+							Filter(true);
+							break;
+					}
+				}
+			}
 
             return hresult;
         }
@@ -137,21 +108,23 @@ namespace Babe.Lua.Intellisense
             if (_currentSession == null)
                 return;
 
-            if (back)
-            {
-                _currentSession.SelectedCompletionSet.Filter();
-                _currentSession.SelectedCompletionSet.SelectBestMatch();
-            }
-            else
-            {
-                _currentSession.SelectedCompletionSet.SelectBestMatch();
-                if (_currentSession.SelectedCompletionSet.SelectionStatus.IsSelected)
-                {
-                    _currentSession.SelectedCompletionSet.Filter();
-                    _currentSession.SelectedCompletionSet.SelectBestMatch();
-                }
-            }
+			_currentSession.Filter();
+			//if (back) _currentSession.Recalculate();
 
+			//if (back)
+			//{
+			//	_currentSession.SelectedCompletionSet.Filter();
+			//	_currentSession.SelectedCompletionSet.SelectBestMatch();
+			//}
+			//else
+			//{
+			//	_currentSession.SelectedCompletionSet.SelectBestMatch();
+			//	if (_currentSession.SelectedCompletionSet.SelectionStatus.IsSelected)
+			//	{
+			//		_currentSession.SelectedCompletionSet.Filter();
+			//		_currentSession.SelectedCompletionSet.SelectBestMatch();
+			//	}
+			//}
         }
 
         bool Cancel()
@@ -194,21 +167,34 @@ namespace Babe.Lua.Intellisense
 
             if (!Broker.IsCompletionActive(TextView))
             {
-                _currentSession = Broker.CreateCompletionSession(TextView, snapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
+                _currentSession = Broker.TriggerCompletion(TextView, snapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
             }
             else
             {
                 _currentSession = Broker.GetSessions(TextView)[0];
             }
-            _currentSession.Dismissed += (sender, args) => _currentSession = null;
 
-            _currentSession.Start();
+			if (_currentSession != null)
+			{
+				_currentSession.Dismissed += (sender, args) =>
+				{
+					_currentSession = null;
+				};
+				_currentSession.Committed += (sender, args) => _currentSession = null;
 
-            if (_currentSession != null && _currentSession.SelectedCompletionSet != null)
-            {
-                _currentSession.SelectedCompletionSet.Filter();
-                _currentSession.SelectedCompletionSet.SelectBestMatch();
-            }
+				//_currentSession.Start();
+				_currentSession.Filter();
+			}
+
+			//if (_currentSession != null && _currentSession.SelectedCompletionSet != null)
+			//{
+			//	_currentSession.SelectedCompletionSet.SelectBestMatch();
+			//	if (_currentSession.SelectedCompletionSet.SelectionStatus.IsSelected)
+			//	{
+			//		_currentSession.SelectedCompletionSet.Filter();
+			//		_currentSession.SelectedCompletionSet.SelectBestMatch();
+			//	}
+			//}
             return true;
         }
 
@@ -221,7 +207,7 @@ namespace Babe.Lua.Intellisense
             if (pos < 0) return true;
             char front = _currentSession.TextView.TextSnapshot[pos];
 
-            return char.IsWhiteSpace(front);
+			return !front.IsWordOrDot();
         }
 
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)
@@ -239,6 +225,4 @@ namespace Babe.Lua.Intellisense
             return Next.QueryStatus(pguidCmdGroup, cCmds, prgCmds, pCmdText);
         }
     }
-
-    #endregion
 }

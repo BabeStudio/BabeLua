@@ -182,6 +182,14 @@ namespace Babe.Lua.Intellisense
 
         }
 
+		public override IList<Completion> Completions
+		{
+			get
+			{
+				return base.Completions;
+			}
+		}
+
         public override void SelectBestMatch()
         {
             this.SelectBestMatch(CompletionMatchType.MatchDisplayText, true);

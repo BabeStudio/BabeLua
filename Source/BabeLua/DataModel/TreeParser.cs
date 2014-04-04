@@ -20,7 +20,7 @@ namespace Babe.Lua.DataModel
                 return;
 			try
 			{
-				FileStream fileStream = System.IO.File.Open(file, FileMode.Open, FileAccess.Read, FileShare.None);
+				FileStream fileStream = System.IO.File.Open(file, FileMode.Open, FileAccess.Read);
 
 				using (StreamReader reader = new StreamReader(fileStream))
 				{
