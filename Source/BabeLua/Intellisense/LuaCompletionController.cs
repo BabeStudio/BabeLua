@@ -69,36 +69,35 @@ namespace Babe.Lua.Intellisense
             if (!handled)
                 hresult = Next.Exec(pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
 
-			if (ErrorHandler.Succeeded(hresult))
-			{
-				if (pguidCmdGroup == VSConstants.VSStd2K)
-				{
-					switch ((VSConstants.VSStd2KCmdID)nCmdID)
-					{
-						case VSConstants.VSStd2KCmdID.TYPECHAR:
-							char ch = GetTypeChar(pvaIn);
-							if (ch == '.' || ch == ':')
-							{
-								Cancel();
-								StartSession();
-							}
-							else if (!ch.IsIdentifier())
-								Cancel();
-							else if (_currentSession == null)
-								StartSession();
-							else if (_currentSession != null)
-								Filter(false);
-							break;
-						case VSConstants.VSStd2KCmdID.BACKSPACE:
-						case VSConstants.VSStd2KCmdID.DELETE:
+            if (ErrorHandler.Succeeded(hresult))
+            {
+                if (pguidCmdGroup == VSConstants.VSStd2K)
+                {
+                    switch ((VSConstants.VSStd2KCmdID)nCmdID)
+                    {
+                        case VSConstants.VSStd2KCmdID.TYPECHAR:
+                            char ch = GetTypeChar(pvaIn);
+                            if (ch == '.' || ch == ':')
+                            {
+                                Cancel();
+                                StartSession();
+                            }
+                            else if (!ch.IsIdentifier())
+                                Cancel();
+                            else if (_currentSession == null && !char.IsNumber(ch))
+                                StartSession();
+                            else if (_currentSession != null)
+                                Filter(false);
+                            break;
+                        case VSConstants.VSStd2KCmdID.BACKSPACE:
 							if (ShouldCancel())
 								Cancel();
 							else
-							Filter(true);
-							break;
-					}
-				}
-			}
+                                Filter(true);
+                            break;
+                    }
+                }
+            }
 
             return hresult;
         }
@@ -207,7 +206,7 @@ namespace Babe.Lua.Intellisense
             if (pos < 0) return true;
             char front = _currentSession.TextView.TextSnapshot[pos];
 
-			return !front.IsWordOrDot();
+			return !front.IsWordOrDot() && !front.Equals(':');
         }
 
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText)

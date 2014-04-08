@@ -386,7 +386,7 @@ namespace Babe.Lua.Package
 				HighlightPosition(line, column, length);
         }
 
-        public void OpenDocument(string file)
+		public void OpenDocument(string file, bool linkToProject = true)
         {
             DTE.ItemOperations.OpenFile(file, EnvDTE.Constants.vsViewKindPrimary);
         }

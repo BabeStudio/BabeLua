@@ -53,9 +53,9 @@ namespace Babe.Lua.Editor
 			textViewAdapter.AddCommandFilter(CompletionFilter, out next);
 			CompletionFilter.Next = next;
 
-			var filter = new CommandFilter(view);
-			textViewAdapter.AddCommandFilter(filter, out next);
-			filter.Next = next;
+			//var filter = new CommandFilter(view);
+			//textViewAdapter.AddCommandFilter(filter, out next);
+			//filter.Next = next;
 
 			EditorReport.TextViewCreated(view);
 		}
@@ -74,7 +74,7 @@ namespace Babe.Lua.Editor
 		{
 			Irony.Parsing.Parser parser = new Irony.Parsing.Parser(Grammar.LuaGrammar.Instance);
 			var tree = parser.Parse(_cur.TextBuffer.CurrentSnapshot.GetText());
-
+			System.Diagnostics.Debug.Print("buffer:{0},snapshot:{1}", _cur.TextBuffer.GetHashCode(), _cur.TextBuffer.CurrentSnapshot.GetHashCode());
 			OnFileContentChanged(tree);
 		}
 
@@ -127,6 +127,18 @@ namespace Babe.Lua.Editor
 			{
 				DelayRefreshTimer.Dispose();
 			}
+		}
+	}
+
+	class FileContentChangeEventArgs : EventArgs
+	{
+		public Irony.Parsing.ParseTree Tree { get; private set; }
+		public ITextSnapshot Snapshot { get; private set; }
+
+		public FileContentChangeEventArgs(ITextSnapshot Snapshot, Irony.Parsing.ParseTree Tree)
+		{
+			this.Tree = Tree;
+			this.Snapshot = Snapshot;
 		}
 	}
 

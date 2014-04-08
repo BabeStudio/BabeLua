@@ -109,7 +109,7 @@ namespace Babe.Lua.DataModel
 			return list;
 		}
 
-		public List<LuaMember> FindRefInFile(LuaFile file, string keyword)
+		public List<LuaMember> SearchInFile(LuaFile file, string keyword)
 		{
 			List<LuaMember> members = new List<LuaMember>();
 
@@ -154,34 +154,6 @@ namespace Babe.Lua.DataModel
 					//		index = lines[i].IndexOf(keyword, index + keyword.Length);
 					//	}
 					//}
-
-					//foreach (var token in file.Tokens)
-					//{
-					//	if (token.EditorInfo == null || token.EditorInfo.Type != Irony.Parsing.TokenType.String)
-					//	{
-					//		if (token.ValueString.Equals(keyword))
-					//		{
-					//			var lmp = new LuaMember(token);
-					//			lmp.Preview = lines[lmp.Line];
-					//			lmp.File = file.File;
-					//			members.Add(lmp);
-					//		}
-					//	}
-					//	else
-					//	{
-					//		if (string.IsNullOrEmpty(token.ValueString)) continue;
-					//		int index = token.ValueString.IndexOf(keyword);
-					//		if (index != -1)
-					//		{
-
-					//			var lmp = new LuaMember(keyword, token.Location.Line, token.Location.Column + 1 + index);
-					//			lmp.Preview = lines[lmp.Line];
-					//			lmp.File = file.File;
-					//			members.Add(lmp);
-
-					//		}
-					//	}
-					//}
 				}
 				catch { }
 			}
@@ -189,7 +161,7 @@ namespace Babe.Lua.DataModel
 			return members;
 		}
 
-		public List<LuaMember> FindAllRef(string keyword, bool AllFile)
+		public List<LuaMember> Search(string keyword, bool AllFile)
 		{
 			List<LuaMember> results = new List<LuaMember>();
 			if (!AllFile)
@@ -204,7 +176,7 @@ namespace Babe.Lua.DataModel
 				//	results.Add(lm);
 				//}
 				DTEHelper.Current.DTE.ActiveDocument.Save();
-				results = FindRefInFile(CurrentFile, keyword);
+				results = SearchInFile(CurrentFile, keyword);
 			}
 			else
 			{
@@ -236,7 +208,7 @@ namespace Babe.Lua.DataModel
 				for (int i = 0; i < Files.Count; i++)
 				{
 					//if (OpenFiles.Contains(Files[i].File)) continue;
-					results.AddRange(FindRefInFile(Files[i], keyword));
+					results.AddRange(SearchInFile(Files[i], keyword));
 				}
 			}
 
@@ -294,7 +266,7 @@ namespace Babe.Lua.DataModel
 			return members;
 		}
 
-		public IEnumerable<LuaMember> FindRefInFile2(LuaFile file, string keyword)
+		public IEnumerable<LuaMember> FindReferencesInFile(LuaFile file, string keyword)
 		{
 			if (file != null)
 			{
@@ -309,44 +281,65 @@ namespace Babe.Lua.DataModel
 						}
 					}
 				}
-				catch { }
+				catch 
+                {
+                    yield break;
+                }
 
-				System.Text.RegularExpressions.Regex reg = new System.Text.RegularExpressions.Regex(keyword);
+                //for (int i = 0; i < file.Tokens.Count; i++)
+                //{
+                //    if(file.Tokens[i].Text.Equals(keyword))
+                //    {
+                //        var lm = new LuaMember(file.Tokens[i]);
+                //        lm.Preview = lines[lm.Line];
+                //        lm.File = file;
+                //        yield return lm;
+                //    }
+                //}
+                foreach (var token in file.Tokens)
+                {
+                    if (token.EditorInfo == null || token.EditorInfo.Type != Irony.Parsing.TokenType.String)
+                    {
+                        if (token.ValueString.Equals(keyword))
+                        {
+                            var lmp = new LuaMember(token);
+                            lmp.Preview = lines[lmp.Line];
+                            lmp.File = file;
+                            yield return lmp;
+                        }
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(token.ValueString)) continue;
+                        int index = token.ValueString.IndexOf(keyword);
+                        if (index != -1)
+                        {
 
-				for (int i = 0; i < lines.Count; i++)
-				{
-					var match = reg.Match(lines[i]);
-					while (match.Success)
-					{
-						var lm = new LuaMember(keyword, i, match.Index);
-						lm.Preview = lines[i];
-						lm.File = file;
-						yield return lm;
-						match = match.NextMatch();
-					}
-				}
+                            var lmp = new LuaMember(keyword, token.Location.Line, token.Location.Column + 1 + index);
+                            lmp.Preview = lines[lmp.Line];
+                            lmp.File = file;
+                            yield return lmp;
+                        }
+                    }
+                }
 			}
 		}
 
-		public IEnumerable<LuaMember> FindRef(string keyword, bool AllFile)
+		public IEnumerable<IEnumerable<LuaMember>> FindReferences(string keyword, bool AllFile)
 		{
 			if (!AllFile)
 			{
 				DTEHelper.Current.DTE.ActiveDocument.Save();
-				return FindRefInFile2(CurrentFile, keyword);
+				yield return FindReferencesInFile(CurrentFile, keyword);
 			}
 			else
 			{
-				List<LuaMember> results = new List<LuaMember>();
-
 				DTEHelper.Current.DTE.Documents.SaveAll();
 
 				for (int i = 0; i < Files.Count; i++)
 				{
-					results.AddRange(FindRefInFile2(Files[i], keyword));
-				}
-
-				return results;
+					yield return FindReferencesInFile(Files[i], keyword);
+                }
 			}
 		}
 	}

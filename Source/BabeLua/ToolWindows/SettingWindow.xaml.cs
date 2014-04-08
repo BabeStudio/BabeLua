@@ -71,6 +71,7 @@ namespace Babe.Lua.ToolWindows
             TextBox_CommandLine.Text = CurSet.CommandLine;
             TextBox_SettingName.Text = name;
 			ComboBox_FileEncoding.SelectedItem = CurSet.Encoding;
+			TextBox_WorkingPath.Text = CurSet.WorkingPath;
         }
 
         //void InitKeyWordsList()
@@ -187,7 +188,7 @@ namespace Babe.Lua.ToolWindows
                 {
                     return;
                 }
-                BabePackage.Setting.AddSetting(name, luapath, TextBox_LuaExecutablePath.Text.Trim(), TextBox_CommandLine.Text.Trim(), (EncodingName)ComboBox_FileEncoding.SelectedItem);
+                BabePackage.Setting.AddSetting(name, luapath, TextBox_LuaExecutablePath.Text.Trim(), TextBox_WorkingPath.Text.Trim(), TextBox_CommandLine.Text.Trim(), (EncodingName)ComboBox_FileEncoding.SelectedItem);
                 BabePackage.Setting.Save();
 
                 //如果保存的是当前选择工程且目录发生变化则重新加载
@@ -199,7 +200,7 @@ namespace Babe.Lua.ToolWindows
             }
             else
             {
-				BabePackage.Setting.AddSetting(name, luapath, TextBox_LuaExecutablePath.Text.Trim(), TextBox_CommandLine.Text.Trim(), (EncodingName)ComboBox_FileEncoding.SelectedItem);
+				BabePackage.Setting.AddSetting(name, luapath, TextBox_LuaExecutablePath.Text.Trim(), TextBox_WorkingPath.Text.Trim(), TextBox_CommandLine.Text.Trim(), (EncodingName)ComboBox_FileEncoding.SelectedItem);
                 BabePackage.Setting.Save();
             }
 
@@ -232,6 +233,8 @@ namespace Babe.Lua.ToolWindows
                     BabePackage.Setting.Save();
 
                     IntellisenseHelper.Scan();
+
+					BabePackage.Current.ShowFolderWindow(null, null);
 
                     DTEHelper.Current.UpdateUI();
 
@@ -386,10 +389,11 @@ namespace Babe.Lua.ToolWindows
             System.Windows.MessageBox.Show("Save key binding");
         }
 
+		#region HyperLinkEventHandlers
 		private void Link_OpenUserKeywords_Click(object sender, RoutedEventArgs e)
 		{
 			var file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), SettingConstants.SettingFolder, SettingConstants.UserKeywordsFile);
-			if (File.Exists(file)) DTEHelper.Current.OpenDocument(file);
+			if (File.Exists(file)) DTEHelper.Current.OpenDocument(file, false);
 		}
 
 		private void Link_OpenSettingFolder_Click(object sender, RoutedEventArgs e)
@@ -407,7 +411,53 @@ namespace Babe.Lua.ToolWindows
 		private void Link_OpenSettings_Click(object sender, RoutedEventArgs e)
 		{
 			var file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), SettingConstants.SettingFolder, SettingConstants.SettingFile);
-			if (File.Exists(file)) DTEHelper.Current.OpenDocument(file);
+			if (File.Exists(file)) DTEHelper.Current.OpenDocument(file, false);
+		}
+
+		private void Link_OpenDownload_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				System.Diagnostics.Process.Start("http://visualstudiogallery.msdn.microsoft.com/aed5f1c9-c9c1-40dd-95aa-5dc7af8ba80f");
+			}
+			catch { }
+		}
+
+		private void Link_OpenBoyaa_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				System.Diagnostics.Process.Start("http://www.boyaa.com");
+			}
+			catch{}
+		}
+
+		private void Link_OpenGithub_Click(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				System.Diagnostics.Process.Start("https://github.com/liyang1221/BabeLua");
+			}
+			catch { }
+		}
+		#endregion
+
+		private void Button_WorkingPath_Click(object sender, RoutedEventArgs e)
+		{
+			FolderBrowserDialog dia = new FolderBrowserDialog();
+			if (string.IsNullOrWhiteSpace(TextBox_WorkingPath.Text))
+			{
+				dia.RootFolder = Environment.SpecialFolder.Desktop;
+			}
+			else
+			{
+				dia.SelectedPath = TextBox_WorkingPath.Text;
+			}
+
+			if (dia.ShowDialog() == DialogResult.OK)
+			{
+				TextBox_WorkingPath.Text = dia.SelectedPath;
+			}
 		}
     }
 }

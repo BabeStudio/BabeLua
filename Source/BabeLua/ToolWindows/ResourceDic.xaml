@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-                    xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.11.0"
+                    
 					xmlns:cur="clr-namespace:Babe.Lua.ToolWindows"
                     >
     <Style x:Key="TextBoxStyle1" TargetType="{x:Type TextBox}">
@@ -14,7 +14,7 @@
                 <Setter Property="MinHeight" Value="20"/>
                 <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                 <Setter Property="AllowDrop" Value="False"/>
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowTabTextBrushKey}}"/>
+                <Setter Property="Foreground" Value="Black"/>
                 <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
                 <Setter Property="ContextMenu">
                     <Setter.Value>
@@ -168,16 +168,16 @@
     </Style>
 
     <Style TargetType="{x:Type TextElement }">
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowTabTextBrushKey}}"/>
+        <Setter Property="Foreground" Value="Black"/>
     </Style>
     <Style TargetType="{x:Type TextBlock }">
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowTabTextBrushKey}}"/>
+        <Setter Property="Foreground" Value="Black"/>
     </Style>
     <Style TargetType="{x:Type TextBox }">
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowTabTextBrushKey}}"/>
+        <Setter Property="Foreground" Value="Black"/>
     </Style>
     <DataTemplate x:Key="ListViewItemTemplate">
-        <TextBlock Text="{Binding}" Background="Transparent" Foreground="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowTabTextBrushKey}}"/>
+        <TextBlock Text="{Binding}" Background="Transparent" Foreground="Black"/>
     </DataTemplate>
     <Style TargetType="{x:Type ListBoxItem}">
         <Setter Property="SnapsToDevicePixels" Value="True"/>

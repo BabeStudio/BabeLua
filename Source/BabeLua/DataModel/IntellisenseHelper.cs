@@ -43,6 +43,7 @@ namespace Babe.Lua.DataModel
             }
 
             _thread = new Thread(Work);
+			_thread.IsBackground = true;
             _thread.Start();
         }
 

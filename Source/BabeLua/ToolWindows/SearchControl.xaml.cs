@@ -66,6 +66,32 @@ namespace Babe.Lua
             }
         }
 
+        internal int Refresh(IEnumerable<IEnumerable<LuaMember>> list)
+        {
+            ListView.Items.Clear();
+            int i = 0;
+            var brush = GetNextBrush();
+
+            string curFilePath = "";
+            foreach (var item in list)
+            {
+                foreach (var member in item)
+                {
+                    if (curFilePath != member.File.File)
+                    {
+                        brush = GetNextBrush();
+                        curFilePath = member.File.File;
+                    }
+
+                    var ltim = new SearchListItem(member, (++i).ToString().PadRight(4));
+                    ltim.Background = brush;
+                    ListView.Items.Add(ltim);
+                }
+            }
+
+            return i;
+        }
+
 		private void Search()
 		{
 			var txt = TextBox_SearchWord.Text;

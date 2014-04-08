@@ -42,14 +42,14 @@ namespace Babe.Lua
                 if (string.IsNullOrWhiteSpace(txt))
                 {
                     this.Caption = Properties.Resources.SearchlWindowTitle2;
+					wnd.ListView.Items.Clear();
                 }
                 else if (this.CurrentSearchWord == txt) return;
                 else
                 {
-                    var list = FileManager.Instance.FindAllRef(txt, AllFile);
-                    this.Caption = string.Format("{0} - find {1} matches", Properties.Resources.SearchlWindowTitle2, list.Count);
-
-                    wnd.Refresh(list);
+					var list = FileManager.Instance.FindReferences(txt, AllFile);
+					int count = wnd.Refresh(list);
+					this.Caption = string.Format("{0} - find {1} matches", Properties.Resources.SearchlWindowTitle2, count);
 
                     this.CurrentSearchWord = txt;
                 }

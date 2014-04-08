@@ -5,12 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
 			 xmlns:local="clr-namespace:Babe.Lua.Editor"
 			 mc:Ignorable="d" 
-             d:DesignHeight="700" d:DesignWidth="706">
+             d:DesignHeight="800" d:DesignWidth="800">
 	<UserControl.Resources>
 		<ResourceDictionary>
 		</ResourceDictionary>
 	</UserControl.Resources>
-    <Grid TextBlock.Foreground="{DynamicResource VsBrush.WindowText}">
+    <Grid TextBlock.Foreground="Black">
         <TabControl Background="Transparent" TabStripPlacement="Left" Grid.RowSpan="2">
             <TabItem Header="Lua Folder" Height="30" Margin="-2,-2,0,0" VerticalAlignment="Top">
                 <Grid Margin="20,20,0,0" TextBox.TextChanged="TextBox_TextChanged">
@@ -27,25 +27,28 @@
                     <Button x:Name="Button_Select" Click="Button_Select_Click" Content="Select" HorizontalAlignment="Left" Margin="137,85,0,0" VerticalAlignment="Top" Width="75" Height="21"/>
                     <Button x:Name="Button_Delete" Click="Button_Delete_Click" Content="Delete" HorizontalAlignment="Left" Margin="137,118,0,0" VerticalAlignment="Top" Width="75" Height="21"/>
                     <Separator Grid.Row="1" VerticalAlignment="Top" Margin="-10,15,0,0"/>
-                    <GroupBox Margin="-10,30,0,0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="573" Height="255" Header="New folder setting">
+                    <GroupBox Margin="-10,30,0,0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Width="573" Height="315" Header="New folder setting">
                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <TextBox x:Name="TextBox_LuaPath" HorizontalAlignment="Left" Height="24" Margin="140,27,0,0" VerticalAlignment="Top" Width="363" VerticalContentAlignment="Center" FontFamily="Latha" FontSize="14"/>
-                            <TextBox x:Name="TextBox_LuaExecutablePath" HorizontalAlignment="Left" Height="24" Margin="140,64,0,0" VerticalAlignment="Top" Width="363" VerticalContentAlignment="Center" FontFamily="Latha" FontSize="14"/>
-                            <TextBox x:Name="TextBox_CommandLine" HorizontalAlignment="Left" Height="24" Margin="140,104,0,0" VerticalAlignment="Top" Width="405" VerticalContentAlignment="Center" FontFamily="Latha" FontSize="14"/>
+                            <TextBox x:Name="TextBox_LuaExecutablePath" HorizontalAlignment="Left" Height="24" Margin="140,70,0,0" VerticalAlignment="Top" Width="363" VerticalContentAlignment="Center" FontFamily="Latha" FontSize="14"/>
+                            <TextBox x:Name="TextBox_CommandLine" HorizontalAlignment="Left" Height="24" Margin="140,161,0,0" VerticalAlignment="Top" Width="405" VerticalContentAlignment="Center" FontFamily="Latha" FontSize="14"/>
                             <TextBlock Text="Lua scripts folder" VerticalAlignment="Top" Margin="23,31,0,0" HorizontalAlignment="Left"/>
-                            <TextBlock Text="Lua .exe path" VerticalAlignment="Top" Margin="23,68,0,0" HorizontalAlignment="Left"/>
-                            <TextBlock Text="Command line" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="23,109,0,0"/>
+                            <TextBlock Text="Lua .exe path" VerticalAlignment="Top" Margin="23,74,0,0" HorizontalAlignment="Left"/>
+                            <TextBlock Text="Command line" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="23,166,0,0"/>
                             <Button Click="Button_LuaPath_Click" Content="..." HorizontalAlignment="Left" Margin="513,27,0,0" VerticalAlignment="Top" Width="32" Height="24"/>
-                            <Button Click="Button_LuaExecutablePath_Click" Content="..." HorizontalAlignment="Left" Margin="513,64,0,0" VerticalAlignment="Top" Width="32" Height="24"/>
-                            <TextBox x:Name="TextBox_SettingName" HorizontalAlignment="Left" Height="24" Margin="140,145,0,0" VerticalAlignment="Top" Width="405" VerticalContentAlignment="Center" FontFamily="Latha" FontSize="14"/>
-                            <TextBlock Text="Setting name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="24,151,0,0"/>
-                            <Button x:Name="Button_Save" Click="Button_Click" Content="Save" HorizontalAlignment="Left" Margin="458,187,0,0" VerticalAlignment="Top" Width="87" Height="24"/>
-							<TextBlock Text="New file encoding" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="24,192,0,0"/>
-							<ComboBox x:Name="ComboBox_FileEncoding" Height="24" Margin="140,187,0,0" SelectedIndex="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="188">
+                            <Button Click="Button_LuaExecutablePath_Click" Content="..." HorizontalAlignment="Left" Margin="513,70,0,0" VerticalAlignment="Top" Width="32" Height="24"/>
+                            <TextBox x:Name="TextBox_SettingName" HorizontalAlignment="Left" Height="24" Margin="140,204,0,0" VerticalAlignment="Top" Width="405" VerticalContentAlignment="Center" FontFamily="Latha" FontSize="14"/>
+                            <TextBlock Text="Setting name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="24,210,0,0"/>
+                            <Button x:Name="Button_Save" Click="Button_Click" Content="Save" HorizontalAlignment="Left" Margin="458,246,0,0" VerticalAlignment="Top" Width="87" Height="24"/>
+							<TextBlock Text="New file encoding" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="24,251,0,0"/>
+							<ComboBox x:Name="ComboBox_FileEncoding" Height="24" Margin="140,246,0,0" SelectedIndex="0" HorizontalAlignment="Left" VerticalAlignment="Top" VerticalContentAlignment="Center" Width="188">
 								<x:Static Member="local:EncodingName.UTF8"/>
 								<x:Static Member="local:EncodingName.UTF8_BOM"/>
 								<x:Static  Member="local:EncodingName.ANSI"/>
 							</ComboBox>
+							<TextBox x:Name="TextBox_WorkingPath" HorizontalAlignment="Left" Height="24" Margin="140,115,0,0" VerticalAlignment="Top" Width="363" VerticalContentAlignment="Center" FontFamily="Latha" FontSize="14"/>
+							<TextBlock Text="Working path" VerticalAlignment="Top" Margin="23,119,0,0" HorizontalAlignment="Left"/>
+							<Button Click="Button_WorkingPath_Click" Content="..." HorizontalAlignment="Left" Margin="513,115,0,0" VerticalAlignment="Top" Width="32" Height="24"/>
 						</Grid>
                     </GroupBox>
                     <TextBlock HorizontalAlignment="Left" Margin="0,52,0,0" VerticalAlignment="Top" Text="Choose setting"/>
@@ -69,21 +72,18 @@
                     <Button x:Name="Button_SaveKeyBinding" Content="Save" HorizontalAlignment="Left" Margin="315,222,0,0" VerticalAlignment="Top" Width="75" Click="Button_SaveKeyBinding_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Other" VerticalAlignment="Top" Height="30" Margin="-2,-2,0,0">
+            <TabItem Header="Other" VerticalAlignment="Top" Height="30" Margin="-2,-2,0,0" Visibility="Collapsed">
                 <Grid Margin="30" TextBlock.FontSize="14">
                     <CheckBox x:Name="CheckBox_HideView" Content=" Hide useless vs views" Checked="CheckBox_HideView_Checked" Unchecked="CheckBox_HideView_Checked" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     <TextBlock FontSize="13" Text="(You must restart VS for the changes to take effect)" Foreground="Red" HorizontalAlignment="Left" Margin="175,0,0,0" VerticalAlignment="Top"/>
-                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,35,0,0">
-                        <Run Text="Click "/><Hyperlink Click="Link_OpenUserKeywords_Click">here</Hyperlink>
-                        <Run Text=" to config keywords and highlight colors"/>
-                    </TextBlock>
+                    
                 </Grid>
             </TabItem>
             <TabItem Header="Help" Height="30" Margin="-2,-2,0,0" VerticalAlignment="Top">
                 <Grid Margin="10">
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-						<TextBlock TextWrapping="Wrap"><Run FontSize="15" Text="BabeLua is a lua editor"/><Run FontSize="15" Language="zh-cn" Text=" for lua 5.1"/><Run FontSize="15" Text=" base on vs2012"/><LineBreak/><LineBreak/><Run FontWeight="Bold" FontSize="13" Text="Advance features"/><LineBreak/><Run Text="--Custom colors of your own keywords"/><LineBreak/><Run Text="--Search lua files by file name in [Folder Explorer] view"/><LineBreak/><Run Text="--Search and show a lua file's outline in [Outline Explore] view"/><LineBreak/><Run Text="--Quick jump in a lua file by field name in Text Editor"/><LineBreak/><Run Text="--Press &lt;Ctrl&gt;(&lt;Alt&gt;) key while double click a word in Text Editor to find all reference in current file(all files)"/><LineBreak/><LineBreak/><Run FontWeight="Bold" FontSize="13" Text="Getting Started with BabeLua"/><LineBreak/><Run Text="--Select your .lua files folder"/><LineBreak/><Run Text="  select menu: 【LUA】--&gt;【Views】--&gt;【Settings】"/><LineBreak/><Run Text="  if you have more than one folder( just like project), you can switch between them. "/><LineBreak/><LineBreak/><Run FontWeight="Bold" FontSize="13" Text="Custom views"/><LineBreak/><Run Text="--select menu to show BabeLua Views:"/><LineBreak/><Run Text="  【LUA】--&gt;【Views】-&gt;【Search Result 1】"/><LineBreak/><Run Text="  【LUA】--&gt;【Views】-&gt;【Search Result 2】"/><LineBreak/><Run Text="  【LUA】--&gt;【Views】-&gt;【File Explorer】"/><LineBreak/><Run Text="  【LUA】--&gt;【Views】-&gt;【Outline Explorer】"/><LineBreak/><LineBreak/><Run Text="  if you need a clean and simple Editor, you can hide some vs views by:"/><LineBreak/><Run Text="  select menu: 【LUA】--&gt;【Views】--&gt;【Settings】--&gt;【Other Setting】--&gt;Hide useless vs views"/><LineBreak/><LineBreak/><Run FontWeight="Bold" FontSize="13" Text="Config colors"/><LineBreak/><Run Text="  modify or add your own keywords with "/><Hyperlink Click="Link_OpenUserKeywords_Click"><Run Text="UserKeyWords.xml"/></Hyperlink><LineBreak/><LineBreak/><Run FontWeight="Bold" FontSize="13" Text="File encoding"/><LineBreak/><Run Text="  you can change default file encoding from [Lua folder setting], it will influence files created by [Folder Explorer View]"/><LineBreak/><Run Text="  you can see file's encoding from statusbar when open lua files"/><LineBreak/><Run/><LineBreak/><Run FontWeight="Bold" Language="zh-cn" Text="O"/><Run FontWeight="Bold" Text="bject-oriented support"/><LineBreak/><Run FontWeight="Bold"/><LineBreak/><Run FontWeight="Bold" Language="zh-cn" Text="  "/><Run Language="zh-cn" Text="if your project use Object-Oriented model , you can define your object definition and constructor keywords (such as class/new)  in "/><Hyperlink Click="Link_OpenSettings_Click"><Run Text="Setting.xml"/></Hyperlink><LineBreak/><LineBreak/><LineBreak/><LineBreak/><LineBreak/><Run Text="Author : RugbbyLi"/><LineBreak/><Run Text="QQ Group : 95814965"/><LineBreak/><Run Language="zh-cn" Text="Email : babelua_report@qq.com"/><LineBreak/><LineBreak/><Run FontWeight="Bold" Text="Copyright © 2008 - 2014 Boyaa Interactive"/><LineBreak/></TextBlock>
-					</ScrollViewer>
+                        <TextBlock TextWrapping="Wrap"><Run FontSize="15" Text="BabeLua is a lua editor"/><Run FontSize="15" Language="zh-cn" Text=" for lua 5.1"/><LineBreak/><LineBreak/><Run FontWeight="Bold" FontSize="13" Text="Advance features"/><LineBreak/><Run Text="--Custom colors of your own keywords"/><LineBreak/><Run Text="--Search lua files by file name in [Folder Explorer] view"/><LineBreak/><Run Text="--Search and show a lua file's outline in [Outline Explore] view"/><LineBreak/><Run Text="--Quick jump in a lua file by field name in Text Editor"/><LineBreak/><Run Text="--Press &lt;Ctrl&gt;(&lt;Alt&gt;) key while double click a word in Text Editor to find all reference in current file(all files)"/><LineBreak/><LineBreak/><Run FontWeight="Bold" FontSize="13" Text="Getting Started with BabeLua"/><LineBreak/><Run Text="--Select your .lua files folder"/><LineBreak/><Run Text="  select menu: [LUA]--&gt;[Views]--&gt;[Settings]"/><LineBreak/><Run Text="  if you have more than one folder( just like project), you can switch between them. "/><LineBreak/><LineBreak/><Run FontWeight="Bold" FontSize="13" Text="Custom views"/><LineBreak/><Run Text="--select menu to show BabeLua Views:"/><LineBreak/><Run Text="  [LUA]--&gt;[Views]-&gt;[Search Result 1]"/><LineBreak/><Run Text="  [LUA]--&gt;[Views]-&gt;[Search Result 2]"/><LineBreak/><Run Text="  [LUA]--&gt;[Views]-&gt;[File Explorer]"/><LineBreak/><Run Text="  [LUA]--&gt;[Views]-&gt;[Outline Explorer]"/><LineBreak/><LineBreak/><Run Text="  if you need a clean and simple Editor, you can hide some vs views by:"/><LineBreak/><Run Text="  select menu: [LUA]--&gt;[Views]--&gt;[Settings]--&gt;[Other Setting]--&gt;Hide useless vs views"/><LineBreak/><LineBreak/><Run FontWeight="Bold" FontSize="13" Text="Config colors"/><LineBreak/><Run Text="  modify or add your own keywords with "/><Hyperlink Click="Link_OpenUserKeywords_Click"><Run Text="UserKeyWords.xml"/></Hyperlink><LineBreak/><LineBreak/><Run FontWeight="Bold" FontSize="13" Text="File encoding"/><LineBreak/><Run Text="  you can change default file encoding from [Lua folder setting], it will influence files created by [Folder Explorer View]"/><LineBreak/><Run Text="  you can see file's encoding from statusbar when open lua files"/><LineBreak/><Run/><LineBreak/><Run FontWeight="Bold" Language="zh-cn" Text="O"/><Run FontWeight="Bold" Text="bject-oriented support"/><LineBreak/><Run FontWeight="Bold" Language="zh-cn" Text="  "/><Run Language="zh-cn" Text="if your project use Object-Oriented model , you can define your object definition and constructor keywords (such as class/new)  in "/><Hyperlink Click="Link_OpenSettings_Click"><Run Text="Setting.xml"/></Hyperlink><LineBreak/><LineBreak/><Run Text="Author : RugbbyLi"/><LineBreak/><Run Text="QQ Group : 95814965"/><LineBreak/><Run Language="zh-cn" Text="Babe Studio"/><LineBreak/><Hyperlink FontWeight="Bold" NavigateUri="http://www.boyaa.com" Click="Link_OpenBoyaa_Click"><Run Text="http://www.boyaa.com"/></Hyperlink><LineBreak/><LineBreak/><Run Text="Download : "/><Hyperlink NavigateUri="http://visualstudiogallery.msdn.microsoft.com/aed5f1c9-c9c1-40dd-95aa-5dc7af8ba80f" TargetName="_blank" Click="Link_OpenDownload_Click"><Run Text="http://visualstudiogallery.msdn.microsoft.com/aed5f1c9-c9c1-40dd-95aa-5dc7af8ba80f"/></Hyperlink><LineBreak/><Run Text="GitHub      : "/><Hyperlink NavigateUri="https://github.com/liyang1221/BabeLua" TargetName="_blank" Click="Link_OpenGithub_Click"><Run Text="https://github.com/liyang1221/BabeLua"/></Hyperlink><LineBreak/><LineBreak/></TextBlock>
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
         </TabControl>

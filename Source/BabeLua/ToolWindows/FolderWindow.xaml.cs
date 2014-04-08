@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows.Input;
 using Babe.Lua.Package;
 using System;
+using System.Windows.Threading;
 
 namespace Babe.Lua.ToolWindows
 {
@@ -391,33 +392,32 @@ namespace Babe.Lua.ToolWindows
 				}
 				catch
 				{
-					MessageBox.Show("Open Fail","error");
+					MessageBox.Show("open fail","Error");
 				}
 			}
         }
 
-		private System.Windows.Threading.DispatcherTimer _timerPreviewDocument;
+		private DispatcherTimer _timerPreviewDocument;
         private string _strPreviewDocumentPath;
         private void SetPreviewDocumentTimerStart(string path)
         {
             _strPreviewDocumentPath = path;
-
-			_timerPreviewDocument = new System.Windows.Threading.DispatcherTimer();
+			_timerPreviewDocument = new DispatcherTimer();
             // 循环间隔时间
-			_timerPreviewDocument.Interval = TimeSpan.FromMilliseconds(1);
+            _timerPreviewDocument.Interval = TimeSpan.FromMilliseconds(1);
             // 允许Timer执行
-			_timerPreviewDocument.IsEnabled = true;
+			_timerPreviewDocument.Start();
             // 定义回调
 			_timerPreviewDocument.Tick += PreviewDocument;
         }
         // timer事件
-        private void PreviewDocument(object sender, System.EventArgs e)
+        private void PreviewDocument(object sender, EventArgs e)
         {
             if (File.Exists(_strPreviewDocumentPath))
             {
                 DTEHelper.Current.PreviewDocument(_strPreviewDocumentPath);
             }
-			if (_timerPreviewDocument != null) _timerPreviewDocument.IsEnabled = false;
+			_timerPreviewDocument.Stop();
         }
 
         private void TreeView_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -667,7 +667,7 @@ namespace Babe.Lua.ToolWindows
 				catch (System.Exception ex)
 				{
 					BabePackage.Setting.LogError(ex);
-					MessageBox.Show(string.Format("create {0} fail.", edit_txtbox.Text), "error");
+					MessageBox.Show(string.Format("create {0} fail.", edit_txtbox.Text), "Error");
 					(edit_item.Parent as ItemsControl).Items.Remove(edit_item);
 				}
 			}
@@ -683,7 +683,7 @@ namespace Babe.Lua.ToolWindows
 				{
 					edit_txtbox.Text = oldName;
 					BabePackage.Setting.LogError(ex);
-					MessageBox.Show("rename fail.", "error");
+					MessageBox.Show("rename fail.", "Error");
 				}
 			}
 		}
@@ -693,6 +693,7 @@ namespace Babe.Lua.ToolWindows
             if (e.Key == Key.Enter)
             {
                 TreeView.Focus();
+				((sender as FrameworkElement).TemplatedParent as TreeViewItem).IsSelected = true;
             }
         }
 
@@ -735,7 +736,7 @@ namespace Babe.Lua.ToolWindows
 
         bool Delete(string path, string name, bool isFolder)
         {
-            if (MessageBox.Show(string.Format(Properties.Resources.DeleteFileConfirm, name), "BabePackage", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+            if (MessageBox.Show(string.Format(Properties.Resources.DeleteFileConfirm, name), "BabeLua", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
             {
                 name = Path.Combine(path, name);
                 if (!isFolder)
@@ -760,7 +761,7 @@ namespace Babe.Lua.ToolWindows
             {
 				var stream = new FileStream(path, FileMode.CreateNew);
 				
-				//此处应当检测设置项，确定新建文件的编码格式
+				//检测设置项，确定新建文件的编码格式
 				//由于不含中文的ANSI和UTF8编码一致，导致此文件会被VS认为是ANSI文件。
 				Encoding encoding;
 				switch (BabePackage.Current.CurrentSetting.Encoding)
@@ -785,7 +786,7 @@ namespace Babe.Lua.ToolWindows
 					{
 						writer.WriteLine(string.Format("--region {0}", Path.GetFileName(path)));
 						writer.WriteLine(string.Format("--Date {0}", System.DateTime.Now.Date.ToShortDateString()));
-						writer.WriteLine("--此文件由[BabeLua]插件自动生成");
+						//writer.WriteLine("--此文件由[BabeLua]插件自动生成");
 						writer.WriteLine();
 						writer.WriteLine();
 						writer.WriteLine();

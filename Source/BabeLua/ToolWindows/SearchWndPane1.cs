@@ -15,7 +15,7 @@ namespace Babe.Lua
     public class SearchWndPane1 : ToolWindowPane,ISearchWnd
     {
         SearchToolControl wnd;
-
+		string CurrentSearchWord;
         public static SearchWndPane1 Current;
         
         /// <summary>
@@ -39,17 +39,20 @@ namespace Babe.Lua
         {
             wnd.Dispatcher.Invoke(() =>
             {
-                if (string.IsNullOrWhiteSpace(txt))
-                {
-                    this.Caption = Properties.Resources.SearchlWindowTitle1;
+				if (string.IsNullOrWhiteSpace(txt))
+				{
+					this.Caption = Properties.Resources.SearchlWindowTitle1;
 					wnd.ListView.Items.Clear();
-                }
-                else
-                {
-					var list = FileManager.Instance.FindAllRef(txt, AllFile);
-					this.Caption = string.Format("{0} - find {1} matches", Properties.Resources.SearchlWindowTitle1, list.Count);
-					wnd.Refresh(list);
-                }
+				}
+				else if (this.CurrentSearchWord == txt) return;
+				else
+				{
+					var list = FileManager.Instance.FindReferences(txt, AllFile);
+					int count = wnd.Refresh(list);
+					this.Caption = string.Format("{0} - find {1} matches", Properties.Resources.SearchlWindowTitle1, count);
+
+					this.CurrentSearchWord = txt;
+				}
             });
         }
     }

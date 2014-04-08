@@ -20,7 +20,7 @@ namespace Babe.Lua.DataModel
                 return;
 			try
 			{
-				FileStream fileStream = System.IO.File.Open(file, FileMode.Open, FileAccess.Read);
+				FileStream fileStream = System.IO.File.Open(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
 				using (StreamReader reader = new StreamReader(fileStream))
 				{
@@ -41,7 +41,7 @@ namespace Babe.Lua.DataModel
 			}
 			catch(Exception e) 
 			{
-				Setting.Instance.LogError(e);
+				Setting.Instance.LogError("open file failed:" + e.GetType().FullName);
 			}
         }
 

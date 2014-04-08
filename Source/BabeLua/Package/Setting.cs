@@ -49,6 +49,7 @@ namespace Babe.Lua.Package
 			public const string SetName = "Name";
 			public const string LuaFolder = "Folder";
 			public const string LuaExec = "LuaExecutable";
+			public const string WorkingPath = "WorkingPath";
 			public const string LuaExecArg = "CommandLine";
 			public const string FileEncoding = "FileEncoding";
 
@@ -345,6 +346,28 @@ namespace Babe.Lua.Package
 			catch { }
 		}
 
+		public void LogError(string message)
+		{
+			try
+			{
+				string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), SettingConstants.SettingFolder, SettingConstants.ErrorLogFile);
+
+				Newtonsoft.Json.Linq.JObject json = new Newtonsoft.Json.Linq.JObject();
+				json["Version"] = SettingConstants.Version;
+				json["Guid"] = UserGUID;
+				json["Type"] = "LogMessage";
+				json["Time"] = DateTime.Now.ToString();
+				json["Message"] = message;
+				
+				using (StreamWriter writer = new StreamWriter(path, true, new UTF8Encoding(false)))
+				{
+					writer.WriteLine(json.ToString());
+					writer.WriteLine();
+				}
+			}
+			catch { }
+		}
+
 		#region OpenFiles
 		public List<string> GetOpenFiles(ref string ActiveFile, ref int Line, ref int Column)
 		{
@@ -406,11 +429,31 @@ namespace Babe.Lua.Package
 			foreach (XElement element in XMLLuaSettings.Elements(SettingConstants.SettingKeys.Set))
 			{
 				var fe = element.Element(SettingConstants.SettingKeys.FileEncoding);
-				var encoding = (EncodingName)Enum.Parse(typeof(EncodingName), fe.Value);
+				var encoding = EncodingName.UTF8;
+				if (fe == null)
+				{
+					element.Add(new XElement(SettingConstants.SettingKeys.FileEncoding, encoding));
+				}
+				else
+				{
+					encoding = (EncodingName)Enum.Parse(typeof(EncodingName), fe.Value);
+				}
+
+				var wp = string.Empty;
+				var workingpath = element.Element(SettingConstants.SettingKeys.WorkingPath);
+				if (workingpath == null)
+				{
+					element.Add(new XElement(SettingConstants.SettingKeys.WorkingPath, ""));
+				}
+				else
+				{
+					wp = workingpath.Value;
+				}
 
 				LuaSet set = new LuaSet(
 					element.Element(SettingConstants.SettingKeys.LuaFolder).Value,
 					element.Element(SettingConstants.SettingKeys.LuaExec).Value,
+					wp,
 					element.Element(SettingConstants.SettingKeys.LuaExecArg).Value,
 					encoding
 					);
@@ -435,7 +478,7 @@ namespace Babe.Lua.Package
 		public LuaSet GetSetting(string name)
 		{
 			if (LuaSettings.ContainsKey(name)) return LuaSettings[name];
-			return null;
+			else return null;
 		}
 
 		public string CurrentSetting
@@ -450,9 +493,9 @@ namespace Babe.Lua.Package
 			}
 		}
 
-		public void AddSetting(string Name, string Folder, string LuaExecutable, string CommandLine, EncodingName Encoding)
+		public void AddSetting(string Name, string Folder, string LuaExecutable, string WorkingPath, string CommandLine, EncodingName Encoding)
 		{
-			var set = new LuaSet(Folder, LuaExecutable, CommandLine, Encoding);
+			var set = new LuaSet(Folder, LuaExecutable, WorkingPath, CommandLine, Encoding);
 			if (LuaSettings.ContainsKey(Name))
 			{
 				LuaSettings[Name] = set;
@@ -480,6 +523,7 @@ namespace Babe.Lua.Package
 				element.Add(new XElement(SettingConstants.SettingKeys.SetName, Name));
 				element.Add(new XElement(SettingConstants.SettingKeys.LuaFolder, Folder));
 				element.Add(new XElement(SettingConstants.SettingKeys.LuaExec, LuaExecutable));
+				element.Add(new XElement(SettingConstants.SettingKeys.WorkingPath, WorkingPath));
 				element.Add(new XElement(SettingConstants.SettingKeys.LuaExecArg, CommandLine));
 				element.Add(new XElement(SettingConstants.SettingKeys.FileEncoding, Encoding));
 				XMLLuaSettings.Add(element);
@@ -490,6 +534,7 @@ namespace Babe.Lua.Package
 					new XElement(SettingConstants.SettingKeys.SetName, Name),
 					new XElement(SettingConstants.SettingKeys.LuaFolder, Folder),
 					new XElement(SettingConstants.SettingKeys.LuaExec, LuaExecutable),
+					new XElement(SettingConstants.SettingKeys.WorkingPath, WorkingPath),
 					new XElement(SettingConstants.SettingKeys.LuaExecArg, CommandLine),
 					new XElement(SettingConstants.SettingKeys.FileEncoding, Encoding)
 					);
