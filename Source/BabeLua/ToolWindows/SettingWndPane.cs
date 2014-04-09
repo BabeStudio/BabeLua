@@ -7,6 +7,7 @@ using System.Windows;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
+using Babe.Lua.Package;
 
 namespace Babe.Lua
 {
@@ -32,12 +33,14 @@ namespace Babe.Lua
 
         public void ShowToLuaFolder()
         {
+			wnd.TabItem_Folder.IsSelected = true;
             wnd.TextBox_LuaPath.SelectAll();
             wnd.TextBox_LuaPath.Focus();
         }
 
         public void ShowToExecutable()
         {
+			wnd.TabItem_Folder.IsSelected = true;
             wnd.TextBox_LuaExecutablePath.Focus();
         }
     }

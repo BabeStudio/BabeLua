@@ -165,6 +165,11 @@
     <Compile Include="Editor\MarkPosTagger.cs" />
     <Compile Include="Editor\TextViewCreationListener.cs" />
     <Compile Include="Extension\StringExtension.cs" />
+    <Compile Include="Grammar\LuaBlockCommentTerminal.cs" />
+    <Compile Include="Grammar\LuaGrammar.cs" />
+    <Compile Include="Grammar\LuaLongStringTerminal.cs" />
+    <Compile Include="Grammar\LuaStringLiteral.cs" />
+    <Compile Include="Grammar\LuaTerminalNames.cs" />
     <Compile Include="Intellisense\LuaCompletionController.cs" />
     <Compile Include="Intellisense\LuaCompletionSource.cs" />
     <Compile Include="Intellisense\LuaOutliner.cs" />
@@ -295,10 +300,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Grammar\Grammar.csproj">
-      <Project>{c6e9775e-1767-449d-98c8-dc61e9efc0f6}</Project>
-      <Name>Grammar</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Irony\Irony.csproj">
       <Project>{d81f5c91-d7db-46e5-bc99-49488fb6814c}</Project>
       <Name>Irony</Name>

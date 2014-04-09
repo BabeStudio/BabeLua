@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 using Babe.Lua.DataModel;
+using Babe.Lua.Package;
 
 namespace Babe.Lua
 {

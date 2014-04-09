@@ -115,7 +115,7 @@
 			</Button>
 
 			<Button guid="guidCmdSet" id="cmdidSetting" priority="0x0102" type="Button">
-				<Parent guid="guidCmdSet" id="MyMenuViewGroup"/>
+				<Parent guid="guidCmdSet" id="MyMenuGroup"/>
 				<Strings>
 					<ButtonText>Settings</ButtonText>
 				</Strings>

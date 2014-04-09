@@ -136,22 +136,22 @@ namespace Babe.Lua.Package
         void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
             System.Windows.MessageBox.Show("BabeLua has run into an error, you may have to restart visual studio.", "Error");
-            
-            Setting.Instance.LogError(e.Exception);
+
+			BabePackage.Setting.LogError(e.Exception);
         }
 
         void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
 			System.Windows.MessageBox.Show("BabeLua has run into an error, you may have to restart visual studio.", "Error");
 			e.Handled = true;
-            
-            Setting.Instance.LogError(e.Exception);
+
+			BabePackage.Setting.LogError(e.Exception);
         }
 
 		void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
 		{
 			System.Windows.MessageBox.Show("BabeLua has run into an error, you may have to restart visual studio.", "Error");
-			Setting.Instance.LogError(e.ExceptionObject as Exception);
+			BabePackage.Setting.LogError(e.ExceptionObject as Exception);
 		}
 
         public void SearchWndClosed(ISearchWnd wnd)

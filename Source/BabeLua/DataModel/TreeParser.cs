@@ -41,7 +41,7 @@ namespace Babe.Lua.DataModel
 			}
 			catch(Exception e) 
 			{
-				Setting.Instance.LogError("open file failed:" + e.GetType().FullName);
+				BabePackage.Setting.LogError("open file failed:" + e.GetType().FullName);
 			}
         }
 

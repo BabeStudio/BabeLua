@@ -2,7 +2,7 @@
 // MUST match guids.h
 using System;
 
-namespace Babe.Lua
+namespace Babe.Lua.Package
 {
     static class GuidList
     {

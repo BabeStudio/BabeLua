@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Babe.Lua
+namespace Babe.Lua.Package
 {
     class OleComponent : IOleComponent 
     {

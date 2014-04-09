@@ -12,7 +12,7 @@
 	</UserControl.Resources>
     <Grid TextBlock.Foreground="Black">
         <TabControl Background="Transparent" TabStripPlacement="Left" Grid.RowSpan="2">
-            <TabItem Header="Lua Folder" Height="30" Margin="-2,-2,0,0" VerticalAlignment="Top">
+			<TabItem Header="Lua Folder" Height="30" Margin="-2,-2,0,0" VerticalAlignment="Top" x:Name="TabItem_Folder">
                 <Grid Margin="20,20,0,0" TextBox.TextChanged="TextBox_TextChanged">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="255*"/>
