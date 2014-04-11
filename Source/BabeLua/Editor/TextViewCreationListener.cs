@@ -29,7 +29,7 @@ namespace Babe.Lua.Editor
 		[Import]
 		public ICompletionBroker CompletionBroker { get; private set; }
 
-		public static event EventHandler<Irony.Parsing.ParseTree> FileContentChanged;
+		public static event EventHandler<FileContentChangedEventArgs> FileContentChanged;
 
 		Babe.Lua.Intellisense.CompletionCommandFilter CompletionFilter;
 
@@ -74,8 +74,7 @@ namespace Babe.Lua.Editor
 		{
 			Irony.Parsing.Parser parser = new Irony.Parsing.Parser(Grammar.LuaGrammar.Instance);
 			var tree = parser.Parse(_cur.TextBuffer.CurrentSnapshot.GetText());
-			System.Diagnostics.Debug.Print("buffer:{0},snapshot:{1}", _cur.TextBuffer.GetHashCode(), _cur.TextBuffer.CurrentSnapshot.GetHashCode());
-			OnFileContentChanged(tree);
+			OnFileContentChanged(_cur.TextBuffer.CurrentSnapshot, tree);
 		}
 
 		void view_Closed(object sender, EventArgs e)
@@ -105,17 +104,17 @@ namespace Babe.Lua.Editor
 
 				DTEHelper.Current.SelectionPage = _cur.Selection;
 
-				IntellisenseHelper.SetFile(file);
+				IntellisenseHelper.SetCurrentFile(file);
 
 				DTEHelper.Current.SetStatusBarText(EncodingDecide.DecideFileEncoding(DTEHelper.Current.DTE.ActiveDocument.FullName).ToString());
 			}
 		}
 
-		void OnFileContentChanged(Irony.Parsing.ParseTree tree)
+		void OnFileContentChanged(ITextSnapshot snapshot, Irony.Parsing.ParseTree tree)
 		{
 			if (FileContentChanged != null)
 			{
-				FileContentChanged(this, tree);
+				FileContentChanged(this, new FileContentChangedEventArgs(snapshot,tree));
 			}
 		}
 
@@ -130,12 +129,12 @@ namespace Babe.Lua.Editor
 		}
 	}
 
-	class FileContentChangeEventArgs : EventArgs
+	class FileContentChangedEventArgs : EventArgs
 	{
 		public Irony.Parsing.ParseTree Tree { get; private set; }
 		public ITextSnapshot Snapshot { get; private set; }
 
-		public FileContentChangeEventArgs(ITextSnapshot Snapshot, Irony.Parsing.ParseTree Tree)
+		public FileContentChangedEventArgs(ITextSnapshot Snapshot, Irony.Parsing.ParseTree Tree)
 		{
 			this.Tree = Tree;
 			this.Snapshot = Snapshot;
@@ -146,10 +145,11 @@ namespace Babe.Lua.Editor
 	{
 		static bool _hasSendReport = false;
 		static int count = 0;
+		const int max = 50;
 
 		static void TextBuffer_Changed(object sender, Microsoft.VisualStudio.Text.TextContentChangedEventArgs e)
 		{
-			if (++count > 50)
+			if (++count > max)
 			{
 				var buf = sender as ITextBuffer;
 				if (buf != null) buf.Changed -= TextBuffer_Changed;

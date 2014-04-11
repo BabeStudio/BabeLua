@@ -12,7 +12,7 @@ namespace Babe.Lua.Package
 {
 	public static class SettingConstants
 	{
-		public const string Version = "W.1.0.6";
+		public const string Version = "W.1.0.7";
 
 		public const string SettingFolder = "BabeLua";
 		public const string SettingFile = "Setting.xml";

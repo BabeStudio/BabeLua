@@ -9,6 +9,7 @@ using System.ComponentModel.Composition;
 using System.Threading;
 
 using Babe.Lua.Grammar;
+using Babe.Lua.Editor;
 
 namespace Babe.Lua.Intellisense
 {
@@ -36,12 +37,12 @@ namespace Babe.Lua.Intellisense
             this.buffer = buffer;
             this.snapshot = buffer.CurrentSnapshot;
             this.regions = new List<Region>();
-            
+
 			Babe.Lua.Editor.TextViewCreationListener.FileContentChanged += TextViewCreationListener_FileContentChanged;
 
 			Irony.Parsing.Parser parser = new Irony.Parsing.Parser(LuaGrammar.Instance);
 			var tree = parser.Parse(snapshot.GetText());
-			ReParse(tree);
+			ReParse(snapshot, tree);
         }
 
         public IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(NormalizedSnapshotSpanCollection spans)
@@ -83,11 +84,12 @@ namespace Babe.Lua.Intellisense
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
-		void TextViewCreationListener_FileContentChanged(object sender, Irony.Parsing.ParseTree e)
+		void TextViewCreationListener_FileContentChanged(object sender, FileContentChangedEventArgs e)
 		{
+			if (e.Snapshot.TextBuffer != this.buffer) return;
 			try
 			{
-				ReParse(e);
+				ReParse(e.Snapshot, e.Tree);
 			}
 			catch
 			{
@@ -95,10 +97,8 @@ namespace Babe.Lua.Intellisense
 			}
 		}
 
-        void ReParse(Irony.Parsing.ParseTree tree)
+        void ReParse(ITextSnapshot newSnapshot, Irony.Parsing.ParseTree tree)
         {
-            ITextSnapshot newSnapshot = buffer.CurrentSnapshot;
-			System.Diagnostics.Debug.Print("buffer:{0},snapshot:{1}", buffer.GetHashCode(), newSnapshot.GetHashCode());
             List<Region> newRegions = new List<Region>();
 
             if (tree.Root != null)
@@ -216,6 +216,7 @@ namespace Babe.Lua.Intellisense
 							sb.AppendLine("TextSnapshot Line:" + snapShot.LineCount);
 
 							Package.BabePackage.Setting.LogError(sb.ToString());
+							return;
 						}
                     }      
                 }
@@ -291,6 +292,7 @@ namespace Babe.Lua.Intellisense
 								sb.AppendLine("TextSnapshot Line:" + snapShot.LineCount);
 
 								Package.BabePackage.Setting.LogError(sb.ToString());
+								return;
 							}
                         }
                     }

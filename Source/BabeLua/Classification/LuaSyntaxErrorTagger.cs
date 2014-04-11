@@ -12,6 +12,7 @@ using Microsoft.VisualStudio.Text.Adornments;
 using System.Threading;
 
 using Babe.Lua.Grammar;
+using Babe.Lua.Editor;
 
 namespace Babe.Lua.Classification
 {
@@ -46,12 +47,13 @@ namespace Babe.Lua.Classification
 
 			Irony.Parsing.Parser parser = new Irony.Parsing.Parser(LuaGrammar.Instance);
 			var tree = parser.Parse(buffer.CurrentSnapshot.GetText());
-			ReParse(tree);
+			ReParse(buffer.CurrentSnapshot, tree);
         }
 
-		private void TextViewCreationListener_FileContentChanged(object sender, Irony.Parsing.ParseTree e)
+		private void TextViewCreationListener_FileContentChanged(object sender, FileContentChangedEventArgs e)
 		{
-			ReParse(e);
+			if (e.Snapshot.TextBuffer != this.buffer) return;
+			ReParse(e.Snapshot, e.Tree);
 		}
 
         public IEnumerable<ITagSpan<LuaErrorTag>> GetTags(NormalizedSnapshotSpanCollection spans)
@@ -102,13 +104,11 @@ namespace Babe.Lua.Classification
             }
         }
 
-        private void ReParse(Irony.Parsing.ParseTree tree)
+        private void ReParse(ITextSnapshot newSnapshot, Irony.Parsing.ParseTree tree)
         {
             int previousCount = errorTokens.Count;
             errorTokens.Clear();
 
-            ITextSnapshot newSnapshot = this.buffer.CurrentSnapshot;
-            
             var newErrors = new List<Irony.Parsing.Token>();
             
 			foreach (var token in tree.Tokens)

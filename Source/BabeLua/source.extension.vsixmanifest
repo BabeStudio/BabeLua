@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
 	<Metadata>
-		<Identity Id="ef2b9b1b-2d16-4088-95d9-904637d77b19" Version="1.0.6" Language="en-US" Publisher="Boyaa"/>
+		<Identity Id="F2DE1689-127D-4FD4-8286-DFE217684315" Version="1.0.7" Language="en-US" Publisher="Boyaa"/>
 		<DisplayName>BabeLua</DisplayName>
 		<Description xml:space="preserve">babe lua tools for visual studio</Description>
+		<MoreInfo>http://visualstudiogallery.msdn.microsoft.com/32ef797c-4b86-4496-bd43-b42afd289905</MoreInfo>
 		<Icon>Resources\Package.ico</Icon>
 		<PreviewImage>Resources\Package.ico</PreviewImage>
 	</Metadata>

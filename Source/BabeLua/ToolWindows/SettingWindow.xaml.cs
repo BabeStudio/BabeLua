@@ -418,7 +418,7 @@ namespace Babe.Lua.ToolWindows
 		{
 			try
 			{
-				System.Diagnostics.Process.Start("http://visualstudiogallery.msdn.microsoft.com/aed5f1c9-c9c1-40dd-95aa-5dc7af8ba80f");
+				System.Diagnostics.Process.Start("http://visualstudiogallery.msdn.microsoft.com/32ef797c-4b86-4496-bd43-b42afd289905");
 			}
 			catch { }
 		}

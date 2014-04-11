@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using Babe.Lua.Package;
+using Microsoft.VisualStudio.Text;
 
 namespace Babe.Lua.DataModel
 {
@@ -98,7 +99,7 @@ namespace Babe.Lua.DataModel
             }
         }
 
-        public static void SetFile(string file)
+        public static void SetCurrentFile(string file)
         {
             var tp = new TreeParser();
             tp.HandleFile(file);
