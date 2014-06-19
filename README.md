@@ -5,7 +5,7 @@ BabeLua is a lua editor base on visual studio.
 
 We hope to make a useful vs addin for lua coder.
 
-Official git repository: https://github.com/liyang1221/BabeLua
+Official git repository: https://github.com/BabeStudio/BabeLua
 
 Features
 =======
